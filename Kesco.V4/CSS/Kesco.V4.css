@@ -1,0 +1,131 @@
+﻿/*Общие стили html-элементов*/
+* {font-family: Verdana; font-size: 8pt;} 
+body{background:whitesmoke;margin: 0px;}
+body:not(:-moz-handler-blocked) fieldset {display: table-cell;}
+/*Стили для ссылки*/
+a {text-decoration:none; color: black}
+a:hover {text-decoration: underline; color: #3399FF}
+a:active{color:#3399FF; text-decoration: none;}
+/*Стили для картинки и таблицы*/
+img {vertical-align: middle;}
+/*table{padding: 0px; margin: 0px;}*/
+/*Стили для текстареа и легенды*/
+fieldset { min-width:100px; border: 1px solid #999999; padding-left: 0px; padding-right: 0px; padding-top:2px; padding-bottom:0px; margin-left: -1px;}
+textarea{width: 100%; overflow: auto; white-space: pre-wrap; word-wrap: break-word; border: 1px solid #999999;padding-top: -2px; padding-left: 1px; margin-left: -1px; margin-bottom: 0px; }
+/*Стили для кнопки, радиобатона, чекбокса и текстового поля ввода*/
+input[type=text]{width: 100%; height: 15px; border: 1px solid #999999; padding-top: -2px; padding-left: 1px; margin-left: -1px; margin-bottom: 0px; }
+input[type=checkbox]{margin: 0px;}
+input[type=radio]{margin: 0px; margin-top: -1px; vertical-align: middle;}
+/*input[type=button]{margin: 0px;}*/
+
+.v4btnWidth70 button { width:70px; }
+.v4btnWidth125 button { width:125px; height:50px; }
+.v4btnWidth150 button { width:150px; height:50px; }
+.v4btnWidth100 button { width:100px; height:50px; }
+.v4btnWidth270 button { width:270px; height:50px; }
+
+/*Стили для элементов управления выбора условий фильтрации*/
+.v4_selectClause{font-size: 7pt !important; cursor: pointer;}
+.v4_selectClauseDisabled{font-size: 7pt !important; color:gray;}
+.v4_selectItemDisabled{color:gray;}
+.v4_p_clause{width:100%; font-size: 7pt !important; background-color: white; cursor: pointer !important;}
+		  
+/*Стили для V4.Select*/
+.v4s {width: 100%;}
+.v4s_btn{width: 20px; height: 19px; padding: 0px; margin: 0px;  margin-right: -1px; background: buttonface no-repeat center center; border: 1px solid #999999; border-left:none; cursor: pointer !important;}	
+.v4s_btnDetail{width: 20px; height: 19px; padding: 0px; margin: 0px; background: url(/styles/detail.gif) buttonface no-repeat center center; border: 1px solid #999999;border-left:none;cursor: pointer !important;}	
+
+.v4s_required{background-color: #FFFF99;}
+
+.v4s_p{width: 100%; padding:0px; background-color: white; cursor: pointer !important;}
+.v4s_p_highlight { background:#3399FF; color:white;  cursor: pointer !important;}
+.v4s_p_fullResult{max-height: 200px; overflow-y: auto;}
+.v4s_pc{color: gray; cursor: default !important;}
+.v4s_pc_over{color: gray; cursor: pointer !important;}
+.v4s_noselect{ } 
+.v4s td{padding:0px;}
+
+/*Стили для V4.ComboBox*/
+.v4c {background-color: white; display: block; position: relative; margin: 0px; padding: 0px; width: auto; height: 18px; border: 1px solid #999999; overflow: hidden; }
+.v4c.match-width {display: inline-block; *display: inline; zoom: 1;}
+.v4c select {position: relative;  display: block; margin: 0;  box-sizing: content-box; padding: 9px 20px 9px 12px; white-space: nowrap; width: 100%; color: black; background: transparent; cursor: pointer; -moz-appearance: window; -webkit-appearance: none; -ms-appearance: none; -o-appearance: none; appearance: none; outline: none; z-index: 2;}
+.v4c select::-ms-expand {display: none;}    
+.v4c:after {position: absolute; top: 0; right: 0; width: 20px; height: 100%; speak: none; content: ''; z-index: 1;}
+.v4c:before {position: absolute; top: 50%; right: 12px; width: 8px; height: 4px; margin: -2px -5px 0 -4px; background: url(/styles/ScrollDownEnabled.gif) no-repeat center center; speak: none; content: '';}
+
+/*Стили для V4.DatePicker*/
+.v4d input[type=text]{width:80px;}
+/*Стили для V4.Number*/
+.v4n input[type=text]{text-align: right;}
+/*Стили для V4.CheckBox*/
+.v4ch {padding-top:4px;}
+/*Стили для V4.Comet*/
+.v4comet { padding-left:5px; width:250px; position: fixed; z-index: 100;}
+/*Стили для V4.Chat*/
+.v4chat { width:400px; position: fixed; background:whitesmoke;text-align: left;font-weight: normal;z-index: 100; }
+/*Стили для наименования контрола*/
+.v4caption { display: inline-block; vertical-align: bottom; margin-bottom: 5px;margin-right: 5px; }
+
+/*Стили для таблиц, отрисовка которых происходит вручную*/
+table.grid	{border-collapse:collapse; border-top: 1px solid #999999; border-left: 1px solid darkgray ;}
+.grid td	{border-bottom: 1px solid darkgray ;	border-right: 1px solid darkgray ; }
+.grid tr:nth-of-type(odd) {background-color: white;}
+.gridHeader th {background-color: #E9E9E9 !important; color: black !important; text-align: center; border-right: 1px solid darkgray   !important; height: 25px;}
+.gridHeader td {background-color: #E9E9E9 !important; color: black !important; text-align: center; border-right: 1px solid darkgray   !important; height: 25px;}
+.gridWrapper{overflow: auto;position: relative;}
+
+/*Стили для элемента управления Alert*/
+#v4_divDialogOverlay{ display:none; position:absolute; top:0px; left:0px; width:100%; }
+#v4_divDialogBox{ display:none; position:fixed; z-index:10; background-color:white; box-shadow: 0px 0px 10px white; }
+#v4_divDialogBox > div { overflow: auto; }
+#v4_divDialogBox > div > #v4_divDialogBoxHead{ font-weight: bold; }
+#v4_divDialogBox > div > #v4_divDialogBoxBody{  }
+#v4_divDialogBox > div > #v4_divDialogBoxFoot{ text-align:center; }
+
+#v4_divDialogBoxFoot{ padding:5px; text-align:center; margin-left:5px; margin-right:5px; margin-bottom:5px;}
+#v4_divDialogBoxBody{ padding:10px; margin-left:5px; margin-right:5px; margin-bottom:2px; margin-top:2px;}
+#v4_divDialogBoxHead{ padding:5px; margin-top:5px; margin-left:5px; margin-right:5px; cursor: pointer !important;}		  
+
+#content {margin: 0 100px 0 100px;}
+#content p {margin: 0.5em 0 0 0;}
+#info {margin: 1em 0 1em 0; padding: 1em; border: solid 1px darkgray ;}
+
+.v4FormContainer{ margin-left: 8px;}
+
+/*Стили для компаний в тултипе*/
+.v4_itemCompanyControl {cursor: pointer !important;}
+  
+/*Стили для элемента управления Menu*/
+.v4menuTable { border-spacing: 0px; border: 1px solid darkgray ; border-radius: 5px;} 
+.v4menuTable td {padding: 0px; background-color: whitesmoke; } 
+.v4menuButton{background: buttonface no-repeat left center; text-align: left; border: 0px; padding: 6px; background: whitesmoke; } 
+.v4menuArrowDown{vertical-align:middle; padding-top: 3px; float: right;}
+.v4menuButtonImg{vertical-align:middle; padding-top: 3px; float: left;}
+.v4menuButton:hover {background-color:gray; }   
+.v4menuButtonImage{height: 13px; position: absolute;}
+.v4menuButtonTextWithImg{padding-left: 16px;}  
+.v4menuSeparator{display: inline; vertical-align:middle; width:2px; height:20px;}
+.v4menuSeparatorHorisont{display: block; padding-left: 5%; width:90%; height:2px;}
+
+
+.v4div-outer-container {display: table;height: 90%;position: absolute;width: 90%;}
+.v4div-inner-container {display: table-cell;text-align: center;vertical-align: middle;}
+.v4div-centered-content {background: white; border: 1px solid darkgray ; display: inline-block; position: relative; padding: 3px;text-align: left;z-index: 9999;max-width: 500px;} 
+
+/*Стили уведомлений сообщений о результах проверки значений контролов*/
+.v4NtfError{font-size: 7pt; font-family: verdana;color: red;}
+.v4NtfInformation{font-size: 7pt; font-family: verdana;color: gray;}
+.v4NtfRecommended{font-size: 7pt; font-family: verdana;color: #3399FF;}
+
+.v4-dialog-noclose .ui-dialog-titlebar-close {display: none }
+.v4-dialog-confirm .ui-dialog-buttonpane {text-align: center; }
+.v4-dialog-confirm .ui-dialog-buttonpane .ui-dialog-buttonset {float: none;}
+
+ 
+ 
+.v4PageHeader {position: fixed;top:0; left:0;width: 99.85%; }
+.v4pageTitle{display: block;font-size:10pt;font-weight: bold;}
+
+.ui-datepicker-weekend a {color: red !important;}
+.ui-dialog { z-index: 9999 !important ;}
+
