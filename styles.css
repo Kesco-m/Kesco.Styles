@@ -1,0 +1,335 @@
+.bgMain,BODY
+{background-color: #efefef;}
+.overAuto, BODY
+{overflow:auto;}
+.bgLight
+{background-color: yellow;}
+.bgSelected, .GridItemS
+{background-color: #ddddff;}   
+.bgWhite, .GridItem
+{background-color: white;} 
+.bgGhostWhite, .GridItemA
+{background-color: ghostwhite;}
+.bgDimGray, .GridHeader, .GridFooter, .GridPaging
+{background-color: #629ed0;}
+
+
+.clWhite, .GridHeader, .GridHeader A, .GridFooter, .GridPaging, .GridPaging A
+{color:white;}
+.clGray
+{color:dimgray;}
+.clDarkBlue, H1, H2, H3
+{color:darkblue;}
+.clBlue, .BlackA A:hover
+{color:blue;}
+.clRed, .notification
+{color:red;}
+.clYellow, .GridHeader A:hover, .GridPaging A:hover
+{color:yellow;}
+.clBlack, .BlackA A
+{color:black;}
+
+
+.fs7, SMALL, .notification
+{font-size: 7pt;}
+.fs8, BODY, TABLE, SELECT, INPUT, H3
+{font-size: 8pt;}
+.fs10, H2
+{font-size: 10pt;}
+.fs13, H1
+{font-size: 13pt;}
+
+
+.ffVerdana, INPUT,BODY,TABLE,SELECT
+{font-family: Verdana;}
+
+
+BODY{margin: 1px}
+
+H1{font-weight: bold;}
+
+H2{font-weight: bold;}
+
+H3{font-weight: bold;margin: 0px;}
+
+IMG	{border:0;}
+
+
+.BlackA A		{text-decoration: none;}
+.BlackA A:hover	{text-decoration: underline;}
+
+.Grid8 TABLE	{border-top: darkgray 1px solid;	border-left: darkgray 1px solid;}
+.Grid8 TD		{border-bottom: darkgray 1px solid;	border-right: darkgray 1px solid;}
+.Grid8 TH		{border-right: darkgray 1px solid;	border-bottom: darkgray 1px solid;}
+
+.GridHeader
+{
+	font-size: 8pt;
+	color: white;
+	font-family: Verdana;
+	background-color: #629ed0;
+	text-align: center;
+	border-right: #4682b4 1px solid;
+	border-left: #4682b4 1px solid;
+}
+.GridHeader A	{text-decoration: underline;}
+.GridHeader A:hover	{text-decoration: underline;}
+
+.GridPaging A	{text-decoration: underline;}
+.GridPaging A:hover	{text-decoration: underline;}
+.notification {FONT-WEIGHT: normal; FONT-STYLE: normal}
+
+
+/*новые стили*/
+
+TD		{FONT-SIZE: 8pt;}
+
+.GridFirstRow TD {border-top: black 1px solid;}
+.GridFirstCell {border-left: black 1px solid;}
+
+.GridRow TD  {border-bottom: black 1px solid;}
+.GridCell {FONT-SIZE: 8pt; padding-left:4px; padding-right:2px; border-right: black 1px solid;}
+
+.Header /*заголовок DIVa*/
+{
+	WIDTH: 100%; 
+	HEIGHT:20px;
+	FONT-WEIGHT: bold; 
+	FONT-SIZE: 9pt; 
+	VERTICAL-ALIGN: middle; 
+	COLOR: white; 
+	FONT-FAMILY: Verdana; 
+	BACKGROUND-COLOR: #629ed0; 
+	TEXT-ALIGN: center;
+}
+
+.div /*стандартное оформление для элементов DIV*/
+{
+	border-right: #629ed0 1px solid;
+	border-top: #629ed0 1px solid;
+	display: none;
+	z-index: 1000;
+	border-left: #629ed0 1px solid;
+	width: 680px;
+	border-bottom: #629ed0 1px solid;
+	position: absolute;
+	background-color: white;
+}
+.groupHeader
+{
+FONT-WEIGHT: bold; 
+FONT-SIZE: 8pt; 
+COLOR: steelblue; 
+FONT-FAMILY: Verdana
+}
+.menu
+{
+	background-image: url(/styles/bgd.jpg);
+	width: 100%;
+	background-repeat: repeat-x;
+	height: 26px;
+	text-align: center;
+	vertical-align:middle;
+}
+
+.selectedButton
+{
+	border-right: white 1px solid;
+	border-top: white 1px solid;
+	border-left: white 1px solid;
+	width: 100%;
+	padding-top: 1px;
+	border-bottom: white 1px solid;
+	height: 17pt;
+	background-color: #ffcc00;
+}
+.unSelectedButton
+{
+	width: 100%;
+	padding-top: 3px;
+	height: 100%;
+	background-color: transparent;
+}
+.selectedButton1
+{
+	border-right: white 1px solid;
+	border-top: white 1px solid;
+	border-left: white 1px solid;
+	width: 100%;
+	padding-top: 3px;
+	border-bottom: white 1px solid;
+	height: 17pt;
+	background-color: #ffcc00;
+}
+.unSelectedButton1
+{
+	margin-top: 5px;
+	vertical-align: baseline;
+	width: 100%;
+	height: 100%;
+	background-color: transparent;
+}
+
+
+.reportGroup
+{
+	font-size: 8pt;
+	color: gray;
+	font-family: Verdana;
+}
+A {FONT-SIZE: 8pt; FONT-FAMILY: Verdana; COLOR: black;text-decoration: none;}
+A:hover {FONT-SIZE: 8pt; FONT-FAMILY: Verdana; COLOR: blue;text-decoration: underline;}
+.lnkbtn {FONT-SIZE: 8pt; FONT-FAMILY: Verdana; COLOR: blue}
+
+.headerCaptionDiv
+{	
+	COLOR: white;
+	TOP: 5px;
+	LEFT: 50px;
+	FONT-FAMILY: Verdana;
+	FONT-WEIGHT: bold;
+	FONT-SIZE: 8pt;
+	POSITION: absolute;	
+}
+
+.subHeaderCaptionDiv
+{
+	COLOR: #000088;
+	TOP: 25px;
+	LEFT: 60px;	
+	FONT-FAMILY: Arial Cyr;
+	FONT-WEIGHT: bold;
+	FONT-SIZE: 15pt;
+	POSITION: absolute;
+	padding-left: 2px;	
+}	
+
+.PageHeader
+{
+	text-align: center;
+	BACKGROUND-COLOR: #FFB300;
+	FONT-SIZE:12px;
+}
+
+.simpleButton
+{
+	border-right: white 1px solid;
+	border-top: white 1px solid;
+	border-left: white 1px solid;
+	width: 100%;
+	padding-top: 1px;
+	border-bottom: white 1px solid;
+	height: 14pt;
+	background-color: #ffcc00;
+	font-size: 8pt;	
+}
+
+.errorRow
+{
+	background-color: #FFDDDD;
+}
+
+.singleRow
+{	
+}
+
+.v3inp
+{
+font-family: Verdana;
+font-size:8pt;
+width:100%;
+border-top: 1px solid gray;
+border-bottom: 1px solid gray;
+border-left: 1px solid gray;
+border-right: 1px solid gray;
+}
+
+.v3select
+{
+font-family: Verdana;
+font-size:8pt;
+}
+
+
+.scroll-table { OVERFLOW: auto;  }
+.scroll-table TR.fixed { Z-INDEX: 10; POSITION: relative; TOP: expression(this.parentElement.parentElement.parentElement.scrollTop) }
+.scroll-table TD.fixed { LEFT: expression(this.parentElement.parentElement.parentElement.parentElement.scrollLeft); POSITION: relative }
+.rightBorderFixed { BORDER-RIGHT: darkgray thin inset; BORDER-BOTTOM: darkgray 1px solid }
+.borderBottomRight { BORDER-RIGHT: darkgray 1px solid; BORDER-BOTTOM: darkgray 1px solid }
+.backGroundFixed { BORDER-BOTTOM: darkgray 1px solid; BACKGROUND-COLOR: aliceblue }
+.backGroundHeader { COLOR: #ffffff; BACKGROUND-COLOR: royalblue }
+.tableCellsBorder { BORDER-COLLAPSE: collapse }
+
+.v3ctrl td {margin:0px;padding:0px;}
+
+A.lnk-btn 
+{	
+	DISPLAY: inline-block; 
+	color:#000066; 	
+	PADDING-LEFT: 15px;	
+	FONT-WEIGHT: bold;	
+	BACKGROUND: url(/Styles/ArrowRightSmall.gif) no-repeat no-repeat no-repeat;	
+	OVERFLOW: hidden;	
+	TEXT-DECORATION: none	
+}
+
+a.notification { color:red; }
+div.notification { color:red; }
+
+.mam-kvn-nav-left 
+{	
+	BACKGROUND: url(/styles/TabsBGLeft.gif) no-repeat left bottom;	
+	MARGIN: 1px 1px 0px;	
+	WIDTH: 10px;	
+	CURSOR: pointer
+} 
+
+.mam-kvn-nav-right 
+{	
+	PADDING-RIGHT: 5px;	
+	DISPLAY: block;	
+	PADDING-LEFT: 5px;	
+	BACKGROUND: url(/styles/TabsBGBody.gif) no-repeat right bottom;	
+	PADDING-BOTTOM: 4px;	
+	MARGIN: 1px 0px 0px 2px;	
+	WIDTH: 170px;	
+	CURSOR: pointer;	
+	COLOR: #000066;	
+	PADDING-TOP: 2px
+}
+
+IMG.lnk-help 
+{	
+	RIGHT: 10px;	
+	WIDTH: 16px;	
+	POSITION: absolute;	
+	TOP: 24px;	
+	HEIGHT: 16px
+} 
+IMG.lnk-help 
+{	
+	BACKGROUND-IMAGE: url(/styles/Help.gif); 
+	border-width: 1px
+}	
+IMG.lnk-help_rel 
+{	
+	BACKGROUND-IMAGE: url(/styles/Help.gif); 
+	border-width: 1px;
+	HEIGHT: 16px;
+	WIDTH: 16px;
+	margin-top:3px;
+}   	     	  		 	   	 	    
+
+.Grid8Grayed {border: #dcdcdc 1px solid; border-collapse:collapse;}
+.Grid8Grayed TD {border: #dcdcdc 1px solid; color:cccccc; }
+.Grid8Grayed A  {color:#cccccc; }
+.Grid8Grayed TH { border:#dcdcdc 1px solid; }
+
+.GridHeaderGrayed
+{
+	text-align: center;
+	BACKGROUND-COLOR: #dcdcdc;
+	COLOR: white;
+	VERTICAL-ALIGN: middle;
+	FONT-SIZE:12px;
+}

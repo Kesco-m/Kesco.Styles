@@ -21,6 +21,8 @@ var v4_timeOfLastRequest = new Date();
 var v4s_popup = null;
 /*Глобальное свойство, определяющее: открыт ли popup-объект на странице, влияет на своевременное закрытия popup-div*/
 var v4s_isPopupOpen = false;
+/*Последний активный контрол типа Select*/
+var v4_lastActiveCtrlSelect = null;
 /*Глобальное свойство, определяющее: открыт ли popup-объект на странице, влияет на своевременное закрытия popup-div*/
 var v4f_isPopupOpen = false;
 /*Глобальное свойство, определяющее: приложение открыто в старом браузере IE*/
@@ -38,9 +40,13 @@ var paramAddFunc = 0;
 /*Глобальное перечень иконок jquery ui*/
 var v4_buttonIcons = {
     Add: "ui-icon-plus",
+    Edit: "ui-icon-pencil",
     Ok: "ui-icon-check",
     Save: "ui-icon-disk",
+    Run: "ui-icon-triangle-1-e",
     Cancel: "ui-icon-closethick",
+    Search: "ui-icon-search",
+    Settings: "ui-icon-gear",
     Refresh: "ui-icon-refresh",
     Close: "ui-icon-arrowthick-1-e",
     Copy: "ui-icon-copy",
@@ -929,6 +935,22 @@ function v4_closeWindow() {
     }
 }
 
+function v4_closeIFrameSrc(ifrControl, ifrIdp) {
+    v4_closeWindowByIdp(ifrIdp, true);
+    $("#" + ifrControl).attr('src', "about:blank");
+}
+
+function v4_closeWindowByIdp(widp, isframe) {
+    if (!widp) return;
+    var frameParams = isframe ? "&frame=true" : "";
+    var url = v4_cometUrl + "/DialogResult.ashx?control=window&command=pageclose&callbackKey=" + widp + frameParams;
+    $.ajax({
+        async: false,
+        type: "POST",
+        url: url
+    });
+}
+
 /*Функция инициализации страницы v4. Установка постоянного соеднинения с сервером, побработка входящего xml, инициализация контрлов*/
 function v4_init() {
     if (window.innerWidth == undefined) {
@@ -938,13 +960,27 @@ function v4_init() {
         v4_onload();
 
     $(window).unload(function () {
+        
+        //для каждого iframe на форме отправляет post на отключение
+        $("iframe").each(function () {
+            var ifrObj = $(this);
+            if (ifrObj.length == 0) return true;
+            if (ifrObj[0].contentWindow == null) return true;
+
+            var iframe_idp = ifrObj[0].contentWindow.idp;
+            var iframe_id = $(this).attr("id");
+            if (iframe_idp) {
+                v4_closeIFrameSrc(iframe_id, iframe_idp );
+            }
+        });
+
         // При выгрузке страницы - запрашиваем сервер об отключении клиента
-        if (itemsParam) {
-            cmd('cmd', 'PageClose', 'paramSave', itemsParam);
+        if (window.self !== window.top) {
+        //frame -- может чего вставим!!!!
         }
-        else {
-            cmd('cmd', 'PageClose');
-        }
+        else
+            v4_closeWindowByIdp(idp, false);
+        
     });
 
     v4s_init();
@@ -961,7 +997,14 @@ function v4_init() {
         document.addEventListener("blur", v4_clearActiveElement, true);
     }
     if (v4_isComet) {
-        v4CometUrl_Template = v4_cometUrl + "/comet.ashx?guid=" + idp + "&id=" + v4_ItemId + "&editable=" + isEditable;
+        var _itemName = "&name="
+        if (typeof v4_ItemName === 'undefined' || v4_ItemName === null) {
+            _itemName = "";
+        } else {
+            _itemName += v4_ItemName;
+        }
+
+        v4CometUrl_Template = v4_cometUrl + "/comet.ashx?guid=" + idp + "&id=" + v4_ItemId + _itemName + "&editable=" + isEditable;
          v4_connectComet('connect');
     } else {
         window.setInterval("v4_keepAlive();", 60000);
@@ -1009,6 +1052,11 @@ function v4_setActiveElement(event) {
     if (event && event.target) {
         document.activeElement =
             event.target == document ? null : event.target;
+        if (document.activeElement && document.activeElement.id && document.activeElement.id != "") {
+            var jqObj =$("#" + document.activeElement.id);
+            if (jqObj.hasClass("v4si"))
+                v4_lastActiveCtrlSelect = jqObj;
+        }
     }
 }
 
@@ -1427,6 +1475,15 @@ function v4s_setSelectedValue(control, callbackKey, result, isMultiReturn) {
     }
 }
 
+/*Callback-функция, которая вызывается при получении значения из формы расширенного поиска сущности*/
+function v4s_setSelectedFullValue(control, callbackKey, result, isMultiReturn) {
+    if (isMultiReturn == 'True') {
+        cmd('ctrl', control, 'cmd', 'clearSelectedItems');
+    }
+
+    v4_setValue(control, JSON.stringify(result));
+}
+
 /*Функция управления полосой прокрутки, вызывается при открытом popup контрола select и нажатии кнопок вверх/вниз. 
 x - на сколько сдвигать полосу прокрутки
 */
@@ -1504,7 +1561,7 @@ function v4s_btnStyle(id) {
     var inp = gi(id + '_0');
     var btn = gi(id + '_1');
     if (btn == null) return;
-
+    
     if (inp.value != '' && inp.value == inp.getAttribute('t') && (btn.getAttribute('urlShowEntity') != null || btn.getAttribute('funcShowEntity') != null)) {
         if (inp.getAttribute('v') == inp.getAttribute('crp')) {
             v4s_btnStyle4Popup(btn, id);
@@ -1631,6 +1688,7 @@ id - идентификатор контрола
 x- тип события: 0 - oninput; 1 - onpropertychange
 */
 function v4s_textChange(event, id, x) {
+
     event = window.event || event;
     var e = event;
     var o = e.target || e.srcElement;
@@ -1652,9 +1710,11 @@ function v4s_textChange(event, id, x) {
                 btn.onclick = function () {
                     var _scr = $.validator.format(btn.getAttribute('funcShowEntity'), inp.getAttribute('v'), id);
                     eval(_scr);
-                    };
+                };
         }
     }
+            
+    inp.setAttribute("stxt", o.value); 
 }
 
 /*Функция-обработчик события нажатия кнопки в конроле Select
@@ -1739,6 +1799,9 @@ function v4s_keyDown(event) {
         o.value = o.getAttribute('t');
         var inp = gi(id + '_0');
         var btn = gi(id + '_1');
+        inp.setAttribute('stxt', '');
+        v4_replaceStyleRequired(o);
+
         if (btn != null) {
             if ((btn.getAttribute('urlShowEntity') != null || btn.getAttribute('funcShowEntity') != null) && ((o != null && o.getAttribute('v') != "") || (inp != null && inp.getAttribute('v')!="")) ) {
                 btn.value = '';
@@ -1747,7 +1810,7 @@ function v4s_keyDown(event) {
                 if (btn.getAttribute('urlShowEntity') != null)
                     btn.onclick = function () { v4_windowOpen(btn.getAttribute('urlShowEntity') + '?id=' + o.getAttribute('v'), ''); };
                 if (btn.getAttribute('funcShowEntity') != null)
-                    btn.onclick = function () {                        
+                    btn.onclick = function () {
                         var _scr = $.validator.format(btn.getAttribute('funcShowEntity'), inp.getAttribute('v'), id);
                         eval(_scr);
                         };
@@ -1787,7 +1850,26 @@ function v4s_popupOut(event) {
 
 
 /*=========================================================================================================================================*/
-/*===========================================================Функции контрола V4.Textbox===================================================*/
+
+/*Функция-обработчик события изменения значения в контроле DatePicker
+id - идентификатор контрола
+goToNextControl - переводить ли фокус на следующий контрол
+*/
+function v4d_changed(id, goToNextControl) {
+    
+    v4d_format(id + '_0');
+    var o = gi(id + '_0');
+    v4_replaceStyleRequired(o);
+    if (o.value != o.getAttribute('t')) {
+        cmd('ctrl', id, 'v', o.value);
+        if (goToNextControl) {
+            v4_setFocus2NextCtrl(id + '_0');
+        }
+    } else if (goToNextControl) {
+        v4_setFocus2NextCtrl(id + '_0');
+    }
+}
+
 
 /*Функция-обработчик события изменения текста в контролах Textbox и TextArea
 event-текущее событие
@@ -1800,6 +1882,9 @@ function v4t_changed(event) {
     cmdasync('ctrl', id, 'v', o.value);
 }
 
+/*===========================================================Функции контрола V4.Textbox===================================================*/
+
+
 /*Функция-обработчик события нажатия кнопки в контролах Textbox и TextArea
 event-текущее событие
 */
@@ -1807,7 +1892,7 @@ function v4t_keyDown(event) {
     event = window.event || event;
     var e = event;
     var o = e.target || e.srcElement;
-    if (e.keyCode == 13) {
+    if (e.keyCode == 13 || e.keyCode == 9) {
         v4_setFocus2NextCtrl();
         return false;
     }
@@ -1891,13 +1976,13 @@ function v4d_format(id) {
 
 }
 
-/*Функция-обработчик события изменения значения в контроле DatePicker
+/*Функция-обработчик события изменения значения в контроле
 id - идентификатор контрола
 goToNextControl - переводить ли фокус на следующий контрол
 */
-function v4d_changed(id, goToNextControl) {
-    
-    v4d_format(id + '_0');
+function v4_ctrlChanged(id, goToNextControl, isDatePicker) {
+
+    if (isDatePicker) v4d_format(id + '_0');
     var o = gi(id + '_0');
     v4_replaceStyleRequired(o);
     if (o.value != o.getAttribute('t')) {
@@ -2126,18 +2211,18 @@ $(document).ready(function () {
     v4_init();
     v4_createToolTipElements();
     v4_createDialogElements();
-    cmdasync('page', 'clientname');
-    //if(typeof srv4js === "function") srv4js('GETCLIENTNAME', null, function (state, obj) { v4_clientName = state.value; }, null);
+    //cmdasync('page', 'clientname');
+    if(typeof srv4js === "function") srv4js('GETCLIENTNAME', null, function (state, obj) { v4_clientName = state.value; }, null);
 });
 
 /*Обработчик закрытия popup-окна*/
-$(document).on("click", function (event) {
-    if (!v4s_isPopupOpen) return;
-    var sc = "v4_selectClause";
-    if (event.target.className != sc && (v4f_isPopupOpen || v4s_isPopupOpen)) {
-        v4s_hidePopup(true);
-    }
-});
+//$(document).on("click", function (event) {
+//    if (!v4s_isPopupOpen) return;
+//    var sc = "v4_selectClause";
+//    if (event.target.className != sc && (v4f_isPopupOpen || v4s_isPopupOpen)) {
+//        //v4s_hidePopup(true);
+//    }
+//});
 
 /*Функция перевода контрола select нередактируемый вид*/
 function v4_setDisableSelect(id, disable) {
@@ -2211,8 +2296,8 @@ var v4_dialog = v4_polymorph(
     function (id, htmlContent, dialogDiv, title, status, width, height, onOpen, onClose, buttons, dialogPosition, isForm, titleCloseButton, dialogConfirm) {
         return v4_dialog(id, htmlContent, dialogDiv, title, status, width, height, onOpen, onClose, buttons, dialogPosition, isForm, titleCloseButton, dialogConfirm, true);
     },
-    
-    function(id, htmlContent, dialogDiv, title, status, width, height, onOpen, onClose, buttons, dialogPosition, isForm, titleCloseButton, dialogConfirm, modalView) {
+
+    function (id, htmlContent, dialogDiv, title, status, width, height, onOpen, onClose, buttons, dialogPosition, isForm, titleCloseButton, dialogConfirm, modalView) {
         var dialogObj;
 
         if (dialogDiv != null)
@@ -2229,13 +2314,17 @@ var v4_dialog = v4_polymorph(
         } else
             closeOnEscape = false;
 
+        var heightAuto = (height && v4_isInt(height) && height % 50 == 0);
+        var widthAuto = (width && v4_isInt(width) && width % 50 == 0);
+
         dialogObj.dialog({
             autoOpen: false,
-            resizable: true,
+            resizable: !heightAuto && !widthAuto,
             closeOnEscape: closeOnEscape,
             modal: modalView,
-            close: function() {
+            close: function () {
                 if (dialogDiv == null) $(this).dialog('destroy').remove();
+                v4s_hidePopup(true);
             }
         });
 
@@ -2243,13 +2332,22 @@ var v4_dialog = v4_polymorph(
         dialogObj.dialog('option', 'title', title);
 
         if (width) {
-            dialogObj.dialog('option', 'width', width);
+            if (widthAuto) {
+                dialogObj.dialog('option', 'width', 'auto');
+            } else {
+                dialogObj.dialog('option', 'width', width);
+            }
             dialogObj.dialog('option', 'minWidth', width);
         }
-        if (height) {
-            dialogObj.dialog('option', 'height', height);
-            dialogObj.dialog('option', 'minHeight', height);
 
+        if (height) {
+            if (heightAuto) {
+                dialogObj.dialog('option', 'height', 'auto');
+            } else {
+                dialogObj.dialog('option', 'height', height);
+            }
+
+            dialogObj.dialog('option', 'minHeight', height);
         }
 
         var dialogClass = !titleCloseButton && !isForm ? "v4-dialog-noclose" : "";
@@ -2262,21 +2360,40 @@ var v4_dialog = v4_polymorph(
             dialogObj.dialog("option", "buttons", [{}]);
             var buttonPane = dialogObj.parent().find('.ui-dialog-buttonset');
             $(buttonPane).empty();
-            $.each(buttons, function(index, props) {
+            $.each(buttons, function (index, props) {
                 $(buttonPane).append('<button id="' + props.id + '" ' + (props.width ? ' style="width:' + props.width + 'px;"' : "") + '>' + props.text + '</button>');
                 var btn = $('#' + props.id);
                 if (props.icons)
                     btn.button({ icons: props.icons });
                 else
                     btn.button();
-                btn.click(props.click);
+
+
+                btn.on('click', function () {
+                    if (v4_lastActiveCtrlSelect && props.kescoCheck && props.kescoCheck==1) {
+                        var v = v4_lastActiveCtrlSelect.attr("v");
+                        var t = v4_lastActiveCtrlSelect.attr("t");
+                        var stxt = v4_lastActiveCtrlSelect.attr("stxt");
+                        if (v4_lastActiveCtrlSelect.val() == '') stxt = '';
+                        if (stxt != "" && v == "" && t == "") {
+                            v4_lastActiveCtrlSelect.focus();
+                            return;
+                        }
+                        v4_lastActiveCtrlSelect.attr("stxt",'');
+                    }
+                    props.click.call();
+
+                });
             });
         }
 
         if (dialogPosition != null) {
             dialogObj.dialog("option", "position", dialogPosition);
         }
-
+        else {
+            var rnd = Math.floor(Math.random() * 16) + 5;
+            dialogObj.dialog({ position: { my: "center center", at: "center+" + rnd + " center + " + rnd, of: window} });
+        }
         if (onOpen)
             dialogObj.bind("dialogopen", onOpen);
 
@@ -2287,6 +2404,12 @@ var v4_dialog = v4_polymorph(
         return dialogObj;
     }
 );
+
+// Проверка значения на Int
+function v4_isInt(value) {
+    var x = parseFloat(value);
+    return !isNaN(value) && (x | 0) === x;
+}
 
 /**
  * Простая функции запроса подтверждения действия пользователя.
@@ -2332,17 +2455,24 @@ function v4_confirmMsgBox(message, title, captionYes, captionNo, fYes, fNo) {
 	var dialogId = v4_guid();
 	
 	dialogObj = v4_dialog(dialogId, message, null, title, 5, null, null, null, null, buttons, null, false, false, true);
-	$( "#"+dialogId ).on( "dialogclose", function(){ if(closeCallback) closeCallback();} );
+	$("#" + dialogId).on("dialogclose", function () { if (closeCallback) closeCallback(); v4s_hidePopup(true); });
 	dialogObj.dialog("open");
 }
 
 /*Функции вывода сообщений подтверждения*/
+var v4_showConfirm_isOpen = false;
 var v4_showConfirm = v4_polymorph(
-    function(message, title, captionYes, captionNo, callbackYes, width) {
-        v4_showConfirm(message, title, captionYes, captionNo, 75, 75, callbackYes, "", width, null)
+    function (message, title, captionYes, captionNo, callbackYes, width) {
+        v4_showConfirm(message, title, captionYes, captionNo, 75, 75, callbackYes, "", "", width, null)
     },
 
-    function (message, title, captionYes, captionNo, widthYes, widthNo, callbackYes, ctrlFocus, width, height) {
+    function (message, title, captionYes, captionNo, callbackYes, callbackNo, width) {
+        v4_showConfirm(message, title, captionYes, captionNo, 75, 75, callbackYes, callbackNo, "", "", width, null)
+    },
+
+    function (message, title, captionYes, captionNo, widthYes, widthNo, callbackYes, callbackNo, ctrlFocus, width, height) {
+        if (v4_showConfirm_isOpen) return;
+        v4_showConfirm_isOpen = true;
         var dialogId = v4_guid();
         var yesId = v4_guid() + '_yes';
         var noId = v4_guid() + '_no';
@@ -2360,25 +2490,26 @@ var v4_showConfirm = v4_polymorph(
             }
         },
          {
-            id: noId,
-            text: captionNo,
-            icons: {
-                primary: v4_buttonIcons.Cancel
-            },
-            width: widthNo,
-            click: function () {
-                $('#' + dialogId).dialog("close");
+             id: noId,
+             text: captionNo,
+             icons: {
+                 primary: v4_buttonIcons.Cancel
+             },
+             width: widthNo,
+             click: function () {
+                 eval(callbackNo);
+                 $('#' + dialogId).dialog("close");
 
-            }   
+             }
          }
     ];
 
-         var onOpen = function () {
-             setTimeout(function () {
-                 $("#" + noId).focus();
-             });
+        var onOpen = function () {
+            setTimeout(function () {
+                $("#" + noId).focus();
+            });
         };
-        var onClose = function () { if (ctrlFocus) $("#" + ctrlFocus).focus(); };
+        var onClose = function () { if (ctrlFocus) $("#" + ctrlFocus).focus(); v4_showConfirm_isOpen = false; v4s_hidePopup(true); };
 
         var dialogObj = v4_dialog(dialogId, message, null, title, 5, width, height, onOpen, onClose, buttons, null, false, false, true);
 
@@ -2387,8 +2518,89 @@ var v4_showConfirm = v4_polymorph(
 
 );
 
-/*Функция вывода диалогового сообщения*/
+    /*Функции вывода сообщений пересчета*/
+    var v4_showRecalc = v4_polymorph(
+    function (message, title, caption1, caption2, caption3, caption4, callback1, callback2, callback3, callback4, width) {
+        v4_showRecalc(message, title, caption1, caption2, caption3, caption4, 80, 80, 80, 80, callback1, callback2, callback3, callback4, "", width, null)
+    },
+
+    function (message, title, caption1, caption2, caption3, caption4, width1, width2, width3, width4, callback1, callback2, callback3, callback4, ctrlFocus, width, height) {
+        var dialogId = v4_guid();
+        var yesId1 = v4_guid() + '_yes1';
+        var yesId2 = v4_guid() + '_yes2';
+        var yesId3 = v4_guid() + '_yes3';
+        var noId = v4_guid() + '_no';
+        var buttons = [
+        {
+            id: yesId1,
+            text: caption1,
+            icons: {
+                primary: v4_buttonIcons.Ok
+            },
+            width: width1,
+            click: function () {
+                eval(callback1);
+                $('#' + dialogId).dialog("close");
+            }
+        },
+        {
+            id: yesId2,
+            text: caption2,
+            icons: {
+                primary: v4_buttonIcons.Ok
+            },
+            width: width2,
+            click: function () {
+                eval(callback2);
+                $('#' + dialogId).dialog("close");
+            }
+        },
+        {
+            id: noId,
+            text: caption3,
+            icons: {
+                primary: v4_buttonIcons.Cancel
+            },
+            width: width3,
+            click: function () {
+                eval(callback3);
+                $('#' + dialogId).dialog("close");
+
+            }
+        },
+        {
+            id: yesId3,
+            text: caption4,
+            icons: {
+                primary: v4_buttonIcons.Ok
+            },
+            width: width4,
+            click: function () {
+                eval(callback4);
+                $('#' + dialogId).dialog("close");
+            }
+        }
+    ];
+
+        var onOpen = function () {
+            setTimeout(function () {
+                $("#" + noId).focus();
+            });
+        };
+        var onClose = function () { if (ctrlFocus) $("#" + ctrlFocus).focus(); v4s_hidePopup(true); };
+
+        var dialogObj = v4_dialog(dialogId, message, null, title, 5, width, height, onOpen, onClose, buttons, null, false, false, true);
+
+        dialogObj.dialog("open");
+    }
+
+);
+
+//Функция вывода диалогового сообщения
+var v4_showMessage_isOpen = false;
 function v4_showMessage(message, title, status, ctrlFocus, width, height) {
+    if (v4_showMessage_isOpen) return;
+    v4_showMessage_isOpen = true;
 
     var dialogId = v4_guid();
     var okId = v4_guid() + "_ok";
@@ -2412,7 +2624,7 @@ function v4_showMessage(message, title, status, ctrlFocus, width, height) {
             $("#" + okId).focus();
         });
     };
-    var onClose = function () { if (ctrlFocus) $("#" + ctrlFocus).focus(); };
+    var onClose = function () { if (ctrlFocus) $("#" + ctrlFocus).focus(); v4_showMessage_isOpen = false; v4s_hidePopup(true); };
 
     var dialogObj = v4_dialog(dialogId, message, null, title, status, width, height, onOpen, onClose, buttons, null, false, false, false);
 

@@ -95,7 +95,7 @@ var v4_Datepicker = new function () {
                 return [true];
             },
             onSelect: function(date) {
-                window.setTimeout("v4d_changed('" + idContainer + "',true);", 10);
+                window.setTimeout("v4_ctrlChanged('" + idContainer + "',true, true);", 10);
             }
         }).next(".ui-datepicker-trigger").addClass("v4s_btn");
 
@@ -113,7 +113,7 @@ var v4_Datepicker = new function () {
         $.datepicker._gotoToday = function (id) {
             $(id).datepicker('setDate', new Date()).datepicker('hide').blur();
             var idCurrent = id.substring(1, id.length - 2);
-            window.setTimeout("v4d_changed('" + idCurrent + "',true);", 0);
+            window.setTimeout("v4_ctrlChanged('" + idCurrent + "',true, true);", 0);
         };
 
         //локализация

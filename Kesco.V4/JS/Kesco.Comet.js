@@ -1,6 +1,28 @@
 ﻿var v4Comet_clientLocalization = {};
 v4_cometSetUsersList.form = null;
 
+// Обработка сообщений, принятых с сервера
+function v4_processResponseComet(data) {
+
+    if (v4_isJSON(data)) {
+        eval("var d=" + data + ";");
+
+        //если окно закрыто
+        if (d.status == 1 && idp == d.guid) return;
+
+        if (d.isV4Script == 1) {
+            v4_xml = v4_string2Xml(d.message);
+            v4_xmlProcessing(v4_xml);
+        }
+    } else {
+        v4_xml = v4_string2Xml(data);
+        v4_xmlProcessing(v4_xml);
+    }
+    // После отображения результатов запроса - снова циклично делаем запрос.
+    v4_connectComet('reconnect');
+}
+
+
 // Посылает lonp poll - запрос серверу
 function v4_connectComet(cmd) {
     
@@ -79,26 +101,6 @@ function v4_cometSendMessage(message) {
 
 //======================Обработка сообщений
 
-// Обработка сообщений, принятых с сервера
-function v4_processResponseComet(data) {
-    
-    if (v4_isJSON(data)) {
-        eval("var d=" + data + ";");
-        
-        //если окно закрыто
-        if (d.status == 1 && idp == d.guid) return;
-       
-        if (d.isV4Script == 1) {
-            v4_xml = v4_string2Xml(d.message);
-            v4_xmlProcessing(v4_xml);
-        }
-    } else {
-        v4_xml = v4_string2Xml(data);
-        v4_xmlProcessing(v4_xml);
-    }
-    // После отображения результатов запроса - снова циклично делаем запрос.
-    v4_connectComet('reconnect');
-}
 
 
 //======================Контрол Comet
