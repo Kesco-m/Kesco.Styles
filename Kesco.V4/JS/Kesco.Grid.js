@@ -6,7 +6,7 @@ function v4_columnSettingsForm(ctrlId, gridCmdListnerIndex, positionElementId, c
     var onOpen = function () { };
     var buttons = [
         {
-            id: "btnClmnSettings_Apply",
+            id: "btnClmnSettings_Apply_" + gridCmdListnerIndex,
             text: grid_clientLocalization.ok_button,
             icons: {
                 primary: v4_buttonIcons.Ok
@@ -14,7 +14,7 @@ function v4_columnSettingsForm(ctrlId, gridCmdListnerIndex, positionElementId, c
             click: function () { v4_getColumnValuesFilter(gridCmdListnerIndex, className, columnId); }
         },
         {
-            id: "btnClmnSettings_Cancel",
+            id: "btnClmnSettings_Cancel_" + gridCmdListnerIndex,
             text: grid_clientLocalization.cancel_button,
             icons: {
                 primary: v4_buttonIcons.Cancel

@@ -21,8 +21,6 @@ var v4_timeOfLastRequest = new Date();
 var v4s_popup = null;
 /*Глобальное свойство, определяющее: открыт ли popup-объект на странице, влияет на своевременное закрытия popup-div*/
 var v4s_isPopupOpen = false;
-/*Последний активный контрол типа Select*/
-var v4_lastActiveCtrlSelect = null;
 /*Глобальное свойство, определяющее: открыт ли popup-объект на странице, влияет на своевременное закрытия popup-div*/
 var v4f_isPopupOpen = false;
 /*Глобальное свойство, определяющее: приложение открыто в старом браузере IE*/
@@ -54,9 +52,6 @@ var v4_buttonIcons = {
     Document: "ui-icon-document",
     Help: "ui-icon-help"
 }
-//Словарь для перехвата кнопок
-var v4_keys = { insert: 45, F2: 113 }; 
-
 /*Иконки статусов диалоговых сообщений */
 var v4_messageStatusIcons = {
         Warning: "Warning.gif",
@@ -427,11 +422,6 @@ function v4_keyDown(event) {
         v4s_scrollContent(10);
     } else if (v4s_isPopupOpen && key == 27) {
         v4s_hidePopup(true);
-    } else if (key == v4_keys.insert) {
-        window.v4_insert();
-    }
-    else if (key == v4_keys.F2) {
-        window.v4_save();
     }
 }
 
@@ -968,27 +958,13 @@ function v4_init() {
         v4_onload();
 
     $(window).unload(function () {
-        
-        //для каждого iframe на форме отправляет post на отключение
-        $("iframe").each(function () {
-            var ifrObj = $(this);
-            if (ifrObj.length == 0) return true;
-            if (ifrObj[0].contentWindow == null) return true;
-
-            var iframe_idp = ifrObj[0].contentWindow.idp;
-            var iframe_id = $(this).attr("id");
-            if (iframe_idp) {
-                v4_closeIFrameSrc(iframe_id, iframe_idp );
-            }
-        });
-
         // При выгрузке страницы - запрашиваем сервер об отключении клиента
-        if (window.self !== window.top) {
-        //frame -- может чего вставим!!!!
+        if (itemsParam) {
+            cmd('cmd', 'PageClose', 'paramSave', itemsParam);
         }
-        else
-            v4_closeWindowByIdp(idp, false);
-        
+        else {
+            cmd('cmd', 'PageClose');
+        }
     });
 
     v4s_init();
@@ -1060,11 +1036,6 @@ function v4_setActiveElement(event) {
     if (event && event.target) {
         document.activeElement =
             event.target == document ? null : event.target;
-        if (document.activeElement && document.activeElement.id && document.activeElement.id != "") {
-            var jqObj =$("#" + document.activeElement.id);
-            if (jqObj.hasClass("v4si"))
-                v4_lastActiveCtrlSelect = jqObj;
-        }
     }
 }
 
@@ -1569,7 +1540,7 @@ function v4s_btnStyle(id) {
     var inp = gi(id + '_0');
     var btn = gi(id + '_1');
     if (btn == null) return;
-    
+
     if (inp.value != '' && inp.value == inp.getAttribute('t') && (btn.getAttribute('urlShowEntity') != null || btn.getAttribute('funcShowEntity') != null)) {
         if (inp.getAttribute('v') == inp.getAttribute('crp')) {
             v4s_btnStyle4Popup(btn, id);
@@ -1696,7 +1667,7 @@ id - идентификатор контрола
 x- тип события: 0 - oninput; 1 - onpropertychange
 */
 function v4s_textChange(event, id, x) {
-
+   
     event = window.event || event;
     var e = event;
     var o = e.target || e.srcElement;
@@ -1718,11 +1689,9 @@ function v4s_textChange(event, id, x) {
                 btn.onclick = function () {
                     var _scr = $.validator.format(btn.getAttribute('funcShowEntity'), inp.getAttribute('v'), id);
                     eval(_scr);
-                };
+                    };
         }
     }
-            
-    inp.setAttribute("stxt", o.value); 
 }
 
 /*Функция-обработчик события нажатия кнопки в конроле Select
@@ -1807,9 +1776,6 @@ function v4s_keyDown(event) {
         o.value = o.getAttribute('t');
         var inp = gi(id + '_0');
         var btn = gi(id + '_1');
-        inp.setAttribute('stxt', '');
-        v4_replaceStyleRequired(o);
-
         if (btn != null) {
             if ((btn.getAttribute('urlShowEntity') != null || btn.getAttribute('funcShowEntity') != null) && ((o != null && o.getAttribute('v') != "") || (inp != null && inp.getAttribute('v')!="")) ) {
                 btn.value = '';
@@ -1818,7 +1784,7 @@ function v4s_keyDown(event) {
                 if (btn.getAttribute('urlShowEntity') != null)
                     btn.onclick = function () { v4_windowOpen(btn.getAttribute('urlShowEntity') + '?id=' + o.getAttribute('v'), ''); };
                 if (btn.getAttribute('funcShowEntity') != null)
-                    btn.onclick = function () {
+                    btn.onclick = function () {                        
                         var _scr = $.validator.format(btn.getAttribute('funcShowEntity'), inp.getAttribute('v'), id);
                         eval(_scr);
                         };
@@ -1900,7 +1866,7 @@ function v4t_keyDown(event) {
     event = window.event || event;
     var e = event;
     var o = e.target || e.srcElement;
-    if (e.keyCode == 13) {
+    if (e.keyCode == 13 || e.keyCode == 9) {
         v4_setFocus2NextCtrl();
         return false;
     }
@@ -2220,23 +2186,17 @@ $(document).ready(function () {
     v4_createToolTipElements();
     v4_createDialogElements();
     //cmdasync('page', 'clientname');
-    if (typeof srv4js === "function") srv4js('GETCLIENTNAME', null, function (state, obj) { v4_clientName = state.value; }, null);
-    if (!window.v4_insert) {
-        window.v4_insert = function() {};
-    }
-    if (!window.v4_save) {
-        window.v4_save = function () { };
-    }
+    if(typeof srv4js === "function") srv4js('GETCLIENTNAME', null, function (state, obj) { v4_clientName = state.value; }, null);
 });
 
 /*Обработчик закрытия popup-окна*/
-//$(document).on("click", function (event) {
-//    if (!v4s_isPopupOpen) return;
-//    var sc = "v4_selectClause";
-//    if (event.target.className != sc && (v4f_isPopupOpen || v4s_isPopupOpen)) {
-//        //v4s_hidePopup(true);
-//    }
-//});
+$(document).on("click", function (event) {
+    if (!v4s_isPopupOpen) return;
+    var sc = "v4_selectClause";
+    if (event.target.className != sc && (v4f_isPopupOpen || v4s_isPopupOpen)) {
+        v4s_hidePopup(true);
+    }
+});
 
 /*Функция перевода контрола select нередактируемый вид*/
 function v4_setDisableSelect(id, disable) {
@@ -2310,8 +2270,8 @@ var v4_dialog = v4_polymorph(
     function (id, htmlContent, dialogDiv, title, status, width, height, onOpen, onClose, buttons, dialogPosition, isForm, titleCloseButton, dialogConfirm) {
         return v4_dialog(id, htmlContent, dialogDiv, title, status, width, height, onOpen, onClose, buttons, dialogPosition, isForm, titleCloseButton, dialogConfirm, true);
     },
-
-    function (id, htmlContent, dialogDiv, title, status, width, height, onOpen, onClose, buttons, dialogPosition, isForm, titleCloseButton, dialogConfirm, modalView) {
+    
+    function(id, htmlContent, dialogDiv, title, status, width, height, onOpen, onClose, buttons, dialogPosition, isForm, titleCloseButton, dialogConfirm, modalView) {
         var dialogObj;
 
         if (dialogDiv != null)
@@ -2336,7 +2296,7 @@ var v4_dialog = v4_polymorph(
             resizable: !heightAuto && !widthAuto,
             closeOnEscape: closeOnEscape,
             modal: modalView,
-            close: function () {
+            close: function() {
                 if (dialogDiv == null) $(this).dialog('destroy').remove();
                 v4s_hidePopup(true);
             }
@@ -2374,30 +2334,14 @@ var v4_dialog = v4_polymorph(
             dialogObj.dialog("option", "buttons", [{}]);
             var buttonPane = dialogObj.parent().find('.ui-dialog-buttonset');
             $(buttonPane).empty();
-            $.each(buttons, function (index, props) {
+            $.each(buttons, function(index, props) {
                 $(buttonPane).append('<button id="' + props.id + '" ' + (props.width ? ' style="width:' + props.width + 'px;"' : "") + '>' + props.text + '</button>');
                 var btn = $('#' + props.id);
                 if (props.icons)
                     btn.button({ icons: props.icons });
                 else
                     btn.button();
-
-
-                btn.on('click', function () {
-                    if (v4_lastActiveCtrlSelect && props.kescoCheck && props.kescoCheck==1) {
-                        var v = v4_lastActiveCtrlSelect.attr("v");
-                        var t = v4_lastActiveCtrlSelect.attr("t");
-                        var stxt = v4_lastActiveCtrlSelect.attr("stxt");
-                        if (v4_lastActiveCtrlSelect.val() == '') stxt = '';
-                        if (stxt != "" && v == "" && t == "") {
-                            v4_lastActiveCtrlSelect.focus();
-                            return;
-                        }
-                        v4_lastActiveCtrlSelect.attr("stxt",'');
-                    }
-                    props.click.call();
-
-                });
+                btn.click(props.click);
             });
         }
 
@@ -2476,15 +2420,11 @@ function v4_confirmMsgBox(message, title, captionYes, captionNo, fYes, fNo) {
 /*Функции вывода сообщений подтверждения*/
 var v4_showConfirm_isOpen = false;
 var v4_showConfirm = v4_polymorph(
-    function (message, title, captionYes, captionNo, callbackYes, width) {
-        v4_showConfirm(message, title, captionYes, captionNo, 75, 75, callbackYes, "", "", width, null)
+    function(message, title, captionYes, captionNo, callbackYes, width) {
+        v4_showConfirm(message, title, captionYes, captionNo, 75, 75, callbackYes, width, null)
     },
 
-    function (message, title, captionYes, captionNo, callbackYes, callbackNo, width) {
-        v4_showConfirm(message, title, captionYes, captionNo, 75, 75, callbackYes, callbackNo, "", "", width, null)
-    },
-
-    function (message, title, captionYes, captionNo, widthYes, widthNo, callbackYes, callbackNo, ctrlFocus, width, height) {
+    function (message, title, captionYes, captionNo, widthYes, widthNo, callbackYes, ctrlFocus, width, height) {
         if (v4_showConfirm_isOpen) return;
         v4_showConfirm_isOpen = true;
         var dialogId = v4_guid();
@@ -2504,24 +2444,23 @@ var v4_showConfirm = v4_polymorph(
             }
         },
          {
-             id: noId,
-             text: captionNo,
-             icons: {
-                 primary: v4_buttonIcons.Cancel
-             },
-             width: widthNo,
-             click: function () {
-                 eval(callbackNo);
-                 $('#' + dialogId).dialog("close");
+            id: noId,
+            text: captionNo,
+            icons: {
+                primary: v4_buttonIcons.Cancel
+            },
+            width: widthNo,
+            click: function () {                 
+                $('#' + dialogId).dialog("close");
 
-             }
+            }   
          }
     ];
 
-        var onOpen = function () {
-            setTimeout(function () {
-                $("#" + noId).focus();
-            });
+         var onOpen = function () {
+             setTimeout(function () {
+                 $("#" + noId).focus();
+             });
         };
         var onClose = function () { if (ctrlFocus) $("#" + ctrlFocus).focus(); v4_showConfirm_isOpen = false; v4s_hidePopup(true); };
 
