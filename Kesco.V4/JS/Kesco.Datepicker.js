@@ -1,4 +1,5 @@
 ﻿$.datepicker.regional['ru'] = {
+    applyText: 'Применить',
     closeText: 'Закрыть',
     prevText: 'Предыдущий месяц',
     nextText: 'Следующий месяц',
@@ -15,6 +16,7 @@
 };
 
 $.datepicker.regional['et'] = {
+    applyText: 'Применить',
     closeText: 'Sulge',
     prevText: 'Eelmine kuu',
     nextText: 'Järgmine kuu',
@@ -31,6 +33,7 @@ $.datepicker.regional['et'] = {
 };
 
 $.datepicker.regional['de'] = {
+    applyText: 'Применить',
     closeText: 'Schließen',
     prevText: 'Vorheriger monat',
     nextText: 'Nächsten monat',
@@ -47,6 +50,7 @@ $.datepicker.regional['de'] = {
 };
 
 $.datepicker.regional['it'] = {
+    applyText: 'Применить',
     closeText: 'Chiudi',
     prevText: 'Mese precedente',
     nextText: 'Il mese prossimo',
@@ -64,7 +68,7 @@ $.datepicker.regional['it'] = {
 
 var v4_Datepicker = new function () {
    
-    this.init = function (ctrlId, culture) {
+    this.init = function (ctrlId, culture, monthformat) {
 
         if (ctrlId == null || ctrlId == "") {
             alert("Не удалось инициализировать элемент управления v4_Datepicker. Не передан Id.")
@@ -73,7 +77,7 @@ var v4_Datepicker = new function () {
         var idContainer = ctrlId.substring(0, ctrlId.length - 2);
 
         $("#" + ctrlId)
-        .datepicker({
+            .datepicker({
             firstDay: 1,
             allowInputToggle: true,
             constrainInput: true,
@@ -82,23 +86,33 @@ var v4_Datepicker = new function () {
             changeMonth: true,
             changeYear: true,
             showButtonPanel: true,
-            dateFormat: "dd.mm.yy",
+            dateFormat: monthformat == 'True' ? "MM yy" : "dd.mm.yy",
             showOn: "button",
             buttonId: idContainer + '_1',
             buttonImage: "",
             buttonImageOnly: false,
             buttonText: "...",
-            beforeShowDay: function(date) {
+            currentText: monthformat == 'True' ? $.datepicker.regional[culture].applyText : $.datepicker.regional[culture].currentText,
+            beforeShowDay: function (date) {
                 var isWeekend = ([0, 6].indexOf(date.getDay()) != -1);
                 if (isWeekend)
                     return [true, 'ui-datepicker-weekend'];
                 return [true];
             },
-            onSelect: function(date) {
-                window.setTimeout("v4_ctrlChanged('" + idContainer + "',true, true);", 10);
+            beforeShow: function (date, inst) {
+                if (monthformat == 'True') {
+                    $(inst.dpDiv).addClass("v4_calendar-off");
+                } else {
+                    $(inst.dpDiv).removeClass("v4_calendar-off");
+                }
+            },
+            onSelect: function (date) {
+                if (monthformat != 'True') {
+                    window.setTimeout("v4_ctrlChanged('" + idContainer + "',true, true);", 10);
+                }
             }
         }).next(".ui-datepicker-trigger").addClass("v4s_btn");
-
+        
         //установка идентификатора кнопке контрола
         var btnWithId = document.getElementById(idContainer + "_1");
         if (btnWithId == null) {
@@ -111,14 +125,51 @@ var v4_Datepicker = new function () {
 
         //переопределение нажатия кнопки Сегодня
         $.datepicker._gotoToday = function (id) {
-            $(id).datepicker('setDate', new Date()).datepicker('hide').blur();
-            var idCurrent = id.substring(1, id.length - 2);
-            window.setTimeout("v4_ctrlChanged('" + idCurrent + "',true, true);", 0);
+            if ($(id).attr('ctrltype') == 'date') {
+                $(id).datepicker('setDate', new Date()).datepicker('hide').blur();
+                var idCurrent = id.substring(1, id.length - 2);
+                window.setTimeout("v4_ctrlChanged('" + idCurrent + "',true, true);", 0);
+            } else {
+                var month = $("#ui-datepicker-div .ui-datepicker-month :selected").val();
+                var year = $("#ui-datepicker-div .ui-datepicker-year :selected").val();
+                var date = new Date(year, month, 1);
+                this._setDateDatepicker($(id), date);
+                this._selectDate(id, this._getDateDatepicker($(id)));
+            }
         };
 
+        $.datepicker._setDateFromField = function (inst, noDefault) {
+            if (inst.input.val() === inst.lastVal) {
+                return;
+            }
+
+            var dateFormat = this._get(inst, "dateFormat"),
+			dates = inst.lastVal = inst.input ? inst.input.val() : null,
+			defaultDate = this._getDefaultDate(inst),
+			date = defaultDate,
+			settings = this._getFormatConfig(inst);
+
+            if (dateFormat == "MM yy") {
+                dateFormat = "dd MM yy";
+                dates = "01 " + dates;
+            }
+            try {
+                date = this.parseDate(dateFormat, dates, settings) || defaultDate;
+            } catch (event) {
+                dates = (noDefault ? "" : dates);
+            }
+            inst.selectedDay = date.getDate();
+            inst.drawMonth = inst.selectedMonth = date.getMonth();
+            inst.drawYear = inst.selectedYear = date.getFullYear();
+            inst.currentDay = (dates ? date.getDate() : 0);
+            inst.currentMonth = (dates ? date.getMonth() : 0);
+            inst.currentYear = (dates ? date.getFullYear() : 0);
+            this._adjustInstDate(inst);
+        }
+        
         //локализация
         $.datepicker.setDefaults($.datepicker.regional[culture]);
         
     };
-    
+   
 };

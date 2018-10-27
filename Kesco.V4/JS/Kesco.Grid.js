@@ -260,3 +260,16 @@ function v4_fixedHeader() {
 function v4_fixedHeaderDestroy() {
     $("table.grid").floatThead("destroy");
 }
+
+
+function v4_gridEnableGrouping() {
+    $(".v4GroupingData").draggable();
+    $(".v4GroupingPanel").droppable({
+        drop: function (event, ui) {
+            alert(2);
+            $(this)
+                    .addClass("ui-state-highlight")
+                    .html("Dropped!");
+        }
+    });
+}

@@ -97,17 +97,27 @@ table.grid	{border-collapse:collapse; border-top: 1px solid #999999; border-left
 .v4_itemCompanyControl {cursor: pointer !important;}
   
 /*Стили для элемента управления Menu*/
-.v4menuTable { border-spacing: 0px; border: 1px solid darkgray ; border-radius: 5px;} 
-.v4menuTable td {padding: 0px; background-color: whitesmoke; } 
-.v4menuButton{background: buttonface no-repeat left center; text-align: left; border: 0px; padding: 6px; background: whitesmoke; } 
+.v4divHeader {
+	position: relative; 
+	width: 99.5%;
+	background: #e9e9e9; 
+	border-top: solid #d4d0c8 1px; 
+	border-left: solid #d4d0c8 1px; 
+	border-bottom: solid #d4d0c8 1px; 
+	border-right: solid #d4d0c8 1px;  
+	padding: 0px;  
+	top: 0px; 
+	left: 0px; 
+}
+.v4menuTable { border-spacing: 0px; border: 1px solid #d4d0c8;} 
+.v4menuTable td {padding: 0px; background-color:  #e9e9e9; } 
 .v4menuArrowDown{vertical-align:middle; padding-top: 3px; float: right;}
-.v4menuButtonImg{vertical-align:middle; padding-top: 3px; float: left;}
-.v4menuButton:hover {background-color:gray; }   
-.v4menuButtonImage{height: 13px; position: absolute;}
-.v4menuButtonTextWithImg{padding-left: 16px;}  
+.v4menuButton{background-color:  #e9e9e9; text-align: left; border: 0px; padding: 0px;} 
+.v4menuButton:hover {background-color:#007fff;color: white;cursor: pointer;}   
+.v4menuButtonImage{height: 13px; position: absolute;margin-left: -4px;}
+.v4menuButtonTextWithImg{padding-left: 16px;white-space: nowrap;}  
 .v4menuSeparator{display: inline; vertical-align:middle; width:2px; height:20px;}
 .v4menuSeparatorHorisont{display: block; padding-left: 5%; width:90%; height:2px;}
-
 
 .v4div-outer-container {display: table;height: 90%;position: absolute;width: 90%;}
 .v4div-inner-container {display: table-cell;text-align: center;vertical-align: middle;}
@@ -160,4 +170,6 @@ span.ui-selectmenu-text
     line-height: normal !important;
 }    
 
-
+.v4_calendar-off .ui-datepicker-calendar {
+    display: none; 
+}

@@ -1683,10 +1683,14 @@ function v4s_hidePopup(force) {
         return;
     /*запусти в отдельтный поток, т.к. не всегда правильно отрабытывает последовательность событий*/
     setTimeout(function () {
-        v4s_popup.style.display = 'none';
+        if (v4s_popup != null) {
+            v4s_popup.innerHTML = ''; 
+            if(v4s_popup.style!=null)
+                v4s_popup.style.display = 'none';
+        }
         v4s_isPopupOpen = false;
         v4f_isPopupOpen = false;
-        v4s_popup.innerHTML = ''; 
+       
     }, 0);
 }
 
@@ -2511,7 +2515,7 @@ var v4_showConfirm = v4_polymorph(
              },
              width: widthNo,
              click: function () {
-                 eval(callbackNo);
+                 if (null != callbackNo && "" != callbackNo) eval(callbackNo);
                  $('#' + dialogId).dialog("close");
 
              }

@@ -4,29 +4,29 @@
 function activateMenuScriptPart()
 {
 	/* Функция названчани на MouseEnter эллемента открытого списка открытие вложенного списка*/
-	$('.v4MenuTRopener').on('mouseenter', 
+    $('.v4menuTRopener').on('mouseenter', 
 		function() {
 			if($(this).children('td').length == 2 && $(this).children('td')[1].style.display == 'none'){ 
 				$('#'+$(this).children('td')[1].id)[0].style.display = 'block';
 			};
 	});
 
-	/* Функция названчани на MouseLeave эллемента открытого списка закрытие вложенного списка*/	
-	$('.v4MenuTRopener').on('mouseleave', 
+	/* Функция названчани на MouseLeave эллемента открытого списка закрытие вложенного списка*/
+$('.v4menuTRopener').on('mouseleave', 
 		function() {if($(this).children('td').length == 2) {
 			$('#'+$(this).children('td')[1].id)[0].style.display = 'none';
 		};
 	});
 	  
-	/* Функция названчани на MouseEnter эллемента кнопки меню 1-его ряда открытие вложенного списка*/  
-	$('.v4FirstMenuButtonDiv').on('mouseenter', 
+	/* Функция названчани на MouseEnter эллемента кнопки меню 1-его ряда открытие вложенного списка*/
+$('.v4firstMenuButtonDiv').on('mouseenter', 
 		function() {if($(this).children('table').length == 1 && $(this).children('table')[0].style.display == 'none'){ 
 			$(this).children('table')[0].style.display = 'block';
 		};
 	});
 
-	/* Функция названчани на MouseEnter эллемента кнопки меню 1-его ряда закрытие вложенного списка*/ 
-	$('.v4FirstMenuButtonDiv').on('mouseleave', function() {
+	/* Функция названчани на MouseEnter эллемента кнопки меню 1-его ряда закрытие вложенного списка*/
+$('.v4firstMenuButtonDiv').on('mouseleave', function () {
 		if($(this).children('table').length == 1) {
 			$(this).children('table')[0].style.display = 'none';
 		};
@@ -90,29 +90,29 @@ function activateMenuScriptPart()
 
 	});
 
-	$('.v4MenuButtonLineOpener').keydown(function(e) {
+	$('.v4menuButtonLineOpener').keydown(function(e) {
 		//ArrowDown
 		if(e.which == 40) {
-			if($(this).closest('.v4MenuTRopener').next('.v4MenuTRopener').length == 1)
+		    if ($(this).closest('.v4menuTRopener').next('.v4menuTRopener').length == 1)
 			{
-				$(this).closest('.v4MenuTRopener').next('.v4MenuTRopener').find('button')[0].focus();
+			    $(this).closest('.v4menuTRopener').next('.v4menuTRopener').find('button')[0].focus();
 			}
 			else
 			{
-				$(this).closest('.v4FirstMenuButtonDiv').children('button')[0].focus();
+			    $(this).closest('.v4firstMenuButtonDiv').children('button')[0].focus();
 			}
 			
 		}
 		
 		//ArrowUp
 		if(e.which == 38) {
-			if($(this).closest('.v4MenuTRopener').prev('.v4MenuTRopener').length == 1)
+		    if ($(this).closest('.v4menuTRopener').prev('.v4menuTRopener').length == 1)
 			{
-				$(this).closest('.v4MenuTRopener').prev('.v4MenuTRopener').find('button')[0].focus();
+			    $(this).closest('.v4menuTRopener').prev('.v4menuTRopener').find('button')[0].focus();
 			}
 			else
 			{
-				$(this).closest('.v4FirstMenuButtonDiv').children('button')[0].focus();
+			    $(this).closest('.v4firstMenuButtonDiv').children('button')[0].focus();
 			}
 			
 		}
@@ -120,20 +120,20 @@ function activateMenuScriptPart()
 		//ErrowLeft
 		if(e.which == 37)
 		{
-			if($(this).closest('.v4FirstMenuButtonDiv').prev().prev().length == 1)
+		    if ($(this).closest('.v4firstMenuButtonDiv').prev().prev().length == 1)
 			{
-				$(this).closest('.v4FirstMenuButtonDiv').prev().prev().children('button')[0].focus();
-				$(this).closest('.v4MenuTable')[0].style.display = 'none';
+			    $(this).closest('.v4firstMenuButtonDiv').prev().prev().children('button')[0].focus();
+			    $(this).closest('.v4menuTable')[0].style.display = 'none';
 			}
 		}
 		
 		//ErrowRight
 		if(e.which == 39)
 		{
-			if($(this).closest('.v4FirstMenuButtonDiv').next().next().length == 1)
+		    if ($(this).closest('.v4firstMenuButtonDiv').next().next().length == 1)
 			{
-				$(this).closest('.v4FirstMenuButtonDiv').next().next().children('button')[0].focus();
-				$(this).closest('.v4MenuTable')[0].style.display = 'none';
+			    $(this).closest('.v4firstMenuButtonDiv').next().next().children('button')[0].focus();
+			    $(this).closest('.v4menuTable')[0].style.display = 'none';
 			}
 		}
 	});
