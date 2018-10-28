@@ -263,13 +263,12 @@ function v4_fixedHeaderDestroy() {
 
 
 function v4_gridEnableGrouping() {
-    $(".v4GroupingData").draggable();
+    
     $(".v4GroupingPanel").droppable({
-        drop: function (event, ui) {
-            alert(2);
+        drop: function (event, ui) {           
             $(this)
                     .addClass("ui-state-highlight")
-                    .html("Dropped!");
+                    //.html("Dropped!");
         }
     });
 }
