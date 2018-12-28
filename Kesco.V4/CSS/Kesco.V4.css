@@ -67,13 +67,21 @@ input[type=radio]{margin: 0px; margin-top: -1px; vertical-align: middle;}
 .v4caption { display: inline-block; vertical-align: bottom; margin-bottom: 5px;margin-right: 5px; }
 
 /*Стили для таблиц, отрисовка которых происходит вручную*/
-table.grid	{border-collapse:collapse; border-top: 1px solid #999999; border-left: 1px solid darkgray ;}
+table th{ text-align: center !important; white-space: nowrap;}
+table.grid	{border-collapse:collapse; border-top: 1px solid darkgray; border-left: 1px solid darkgray ;}
 .grid td	{border-bottom: 1px solid darkgray ;	border-right: 1px solid darkgray ; }
 .grid tr:nth-of-type(odd) {background-color: white !important;}
 .grid tr:nth-of-type(even) {background-color: whitesmoke !important;}
+
+table.gridSelect {border-collapse:collapse; border-spacing:0px 0px}
+.gridSelect td	{border-bottom: 1px solid darkgray ;padding: 0px;padding-left: 3px; padding-right: 3px; }
+.gridHeaderSelect td {background-color: #E9E9E9 !important; color: black !important; text-align: center; border-right: 1px solid darkgray   !important; }
+
 .gridHeader th {background-color: #E9E9E9 !important; color: black !important; text-align: center; border-right: 1px solid darkgray   !important; height: 25px;}
 .gridHeader td {background-color: #E9E9E9 !important; color: black !important; text-align: center; border-right: 1px solid darkgray   !important; height: 25px;}
 .gridWrapper{overflow: auto;position: relative;}
+
+
 
 /*Стили для элемента управления Alert*/
 #v4_divDialogOverlay{ display:none; position:absolute; top:0px; left:0px; width:100%; }
@@ -131,15 +139,15 @@ table.grid	{border-collapse:collapse; border-top: 1px solid #999999; border-left
 .v4-dialog-noclose .ui-dialog-titlebar-close {display: none }
 .v4-dialog-confirm .ui-dialog-buttonpane {text-align: center; }
 .v4-dialog-confirm .ui-dialog-buttonpane .ui-dialog-buttonset {float: none;}
-
- 
  
 .v4PageHeader {position: fixed;top:0; left:0;width: 99.85%; }
 .v4pageTitle{display: block;font-size:10pt;font-weight: bold;}
 
-.v4DivTable { display: table; line-height:1.4}
-.v4DivTableRow { display: table-row; }
-.v4DivTableCell { display: table-cell;text-align: center; vertical-align: middle;}
+.v4DivTable { display:table; line-height:1.4}
+.v4DivTableRow { display:table-row; }
+.v4DivTableCell { display:table-cell; text-align: center; vertical-align: middle;}
+.v4DivBlock {  display: block ;line-height:1.4}
+.v4DivInline {  display: inline-block; text-align: center; vertical-align: middle;}
 .v4PaddingCell {padding-right: 5px; white-space: nowrap;}
 .v4PaddingTop {padding-top: 5px;}
 .v4NumberTextAlign{ text-align: right !important;}
@@ -153,23 +161,19 @@ table.grid	{border-collapse:collapse; border-top: 1px solid #999999; border-left
     height: 1px; /* Толщина линии */
    }
 
+.ui-datepicker {z-index: 99999 !important;}
 .ui-datepicker-weekend a {color: red !important;}
+.ui-datepicker-current {font-weight: bold !important; color: black !important;}
+
 .ui-dialog { z-index: 2000;overflow: visible;}
-.ui-dialog .ui-dialog-content {
-    overflow: inherit;
-}                                                                                                                                                           
+.ui-dialog .ui-dialog-content {overflow: inherit;}                                                                                                                                                           
 
+.ui-selectmenu-button {vertical-align: middle;margin-right: 1px;}   
+span.ui-selectmenu-text{line-height: normal !important;}    
 
-.ui-selectmenu-button {
-    vertical-align: middle;
-    margin-right: 1px;
-}   
+.v4_calendar-off .ui-datepicker-calendar {display: none;}
 
-span.ui-selectmenu-text
-{
-    line-height: normal !important;
-}    
+.v4TempHighlight {border: 2px solid red;font-weight: bold;}
 
-.v4_calendar-off .ui-datepicker-calendar {
-    display: none; 
-}
+.v4GridListGroup{ list-style-type: none;padding: 0px;margin: 0px;}
+.v4GridListGroup>li{display: inline-block; list-style: outside none none;float: left;width: auto;height:22px; border:1px solid #999999; padding-top:4px; background-color: #E9E9E9; margin-right:2px; font-weight:bold; vertical-align:middle;}

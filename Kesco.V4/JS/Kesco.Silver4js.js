@@ -27,7 +27,7 @@ function srv4js(func, args, callback, obj) {
         try {
             ip = kesco_ip;
 	    Silverlight.createObject(
-			"/STYLES/Silver4JS.xap?v=1.0.0.1", 	// source
+			"/STYLES/Silver4JS.xap?v=1.0.0.2", 	// source
 			kesco_silverHost, 			// parent element
 			"silver4js_obj", 			// id for generated object element
 			{width: "1px", height: "1px" },

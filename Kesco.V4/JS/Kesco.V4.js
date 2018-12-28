@@ -52,7 +52,8 @@ var v4_buttonIcons = {
     Copy: "ui-icon-copy",
     Delete: "ui-icon-trash",
     Document: "ui-icon-document",
-    Help: "ui-icon-help"
+    Help: "ui-icon-help",
+    Alert: "ui-icon-alert"
 }
 //Словарь для перехвата кнопок
 var v4_keys = { insert: 45, F2: 113 }; 
@@ -594,46 +595,8 @@ function v4_getXmlAttribute(idNode, attrName) {
 /*Функция устновки фокуса на следующий контрол. Текущим является или имеющий переданный дентификатор или тот, на котором в данный момент установлен фокус
 id-идентификатор элемента
 */
-/*function v4_setFocus2NextCtrl(id) {
-    var _this = id == null ? document.activeElement : gi(id);
-    if (_this == null) return;
-    var nc = _this.getAttribute('nc');
-    if (nc != null) {
-        var nctrl = gi(nc);
-        if (nctrl != null) {
-            if (nctrl.tagName == 'INPUT' || nctrl.tagName == 'SELECT' || nctrl.tagName == 'TEXTAREA' || nctrl.tagName == 'BUTTON') {
-                if (nctrl.disabled || document.getElementById(nctrl.id).parentNode.style.display == 'none') {
-                    v4_setFocus2NextCtrl(nctrl.id);
-                } else {
-                    nctrl.focus();
-                }
-                return;
-            } else {
-                var childSelect = nctrl.getElementsByTagName('SELECT');
-                if (childSelect.length > 0) {
-                    if (!childSelect[0].disabled) {
-                        childSelect[0].focus();
-                        return;
-                    }
-                }
-                var child = nctrl.getElementsByTagName('INPUT');
-                if (child.length > 0) {
-                    for (var i = 0; i < child.length; i++) {
-                        if (child[i].disabled) {
-				if (child[i].tagName == 'INPUT' || child[i].tagName == 'SELECT' || child[i].tagName == 'TEXTAREA' || child[i].tagName == 'BUTTON') {
-                            		v4_setFocus2NextCtrl(child[i].id); }
-                        } else {
-                            child[i].focus();
-                            return;
-                        }
-                    }
-                }
-            }
-        }
-    }
-}*/
 
-function v4_setFocus2NextCtrl(id) {
+function v4_setFocus2NextCtrl(id, tab) {
     var _this = id == null ? document.activeElement : gi(id);
     if (_this == null) return;
     var nc = _this.getAttribute('nc');
@@ -644,16 +607,18 @@ function v4_setFocus2NextCtrl(id) {
                 if (nctrl.disabled || document.getElementById(nctrl.id).parentNode.style.display == 'none') {
                     v4_setFocus2NextCtrl(nctrl.id);
                 } else {
-			if($('#'+nctrl.id).is(':visible')){
-				nctrl.focus();
-			}
-			else
-			{
-				 v4_setFocus2NextCtrl(nctrl.id);
-			}
+			        if($('#'+nctrl.id).is(':visible')){
+				        nctrl.focus();
+			        }
+			        else
+			        {
+				         v4_setFocus2NextCtrl(nctrl.id);
+			        }
                 }
                 return;
-            } else {
+            }
+            else 
+            {
                 var childSelect = nctrl.getElementsByTagName('SELECT');
                 if (childSelect.length > 0) {
                     if (!childSelect[0].disabled) {
@@ -720,6 +685,7 @@ function v4_windowOpen(uri, inx, params) {
 o - элемент
 */
 function v4_replaceStyleRequired(o) {
+    if (o == null) return;
     if (o.value == '' && o.getAttribute('isRequired') == 1) {
         cc(o, 'v4s_required', '');
     } else {
@@ -1538,6 +1504,7 @@ function v4s_showPopup(id, fullResult) {
     if (gi(id)) {
         gi(id).focus();
     }
+    //Wait.render(false);
 }
 
 /*Функция открытия popup для выбора условий фильтрации
@@ -1733,7 +1700,6 @@ function v4s_textChange(event, id, x) {
 event - текущее событие
 */
 function v4s_keyDown(event) {
-  
     event = window.event || event;
     var e = event;
     var o = e.target || e.srcElement;
@@ -1751,7 +1717,7 @@ function v4s_keyDown(event) {
                 r++;
                 if (r == t.rows.length) r = 0;
 
-                if (t.rows[r].className == 'v4s_noselect') continue;
+                if (t.rows[r].classList.contains("v4s_noselect")) continue;
                 t.rows[r].className = 'v4s_p_highlight';
                 break;
             }
@@ -1759,7 +1725,7 @@ function v4s_keyDown(event) {
             for (var i = 0; i < t.rows.length; i++) {
                 if (r == 0 || r == -1) r = t.rows.length;
                 r--;
-                if (t.rows[r].className == 'v4s_noselect') continue;
+                if (t.rows[r].classList.contains("v4s_noselect")) continue;
                 t.rows[r].className = 'v4s_p_highlight';
                 break;
             }
@@ -1802,6 +1768,7 @@ function v4s_keyDown(event) {
             v4_setBlur = id + '_0';
             var searchText = (o.value != o.getAttribute('t')) ? o.value : "";
             var valueText = o.getAttribute('t');
+            //Wait.render(true);
             cmdasync('ctrl', id, 'tn', o.value, 'st', searchText, 'cmd', 'popup');
         } else {
             v4_setFocus2NextCtrl();
@@ -1840,7 +1807,7 @@ event - текущее событие
 function v4s_popupOver(event) {
     event = window.event || event;
     var target = event.target || event.srcElement;
-    if (target.tagName == "TD" && target.parentElement.className != 'v4s_noselect') {
+    if (target.tagName == "TD" && !target.parentElement.classList.contains("v4s_noselect")) {
         v4_isStopBlur = true;
         var r = v4s_getSelectedRowIndex();
         if (r >= 0) target.parentElement.parentElement.rows[r].className = '';
@@ -1854,7 +1821,7 @@ event - текущее событие
 function v4s_popupOut(event) {
     event = window.event || event;
     var target = event.target || event.srcElement;
-    if (target.tagName == "TD" && target.parentElement.className != 'v4s_noselect') {
+    if (target.tagName == "TD" && !target.parentElement.classList.contains("v4s_noselect")) {
         v4_isStopBlur = false;
         target.parentElement.className = '';
     }
@@ -1868,7 +1835,6 @@ id - идентификатор контрола
 goToNextControl - переводить ли фокус на следующий контрол
 */
 function v4d_changed(id, goToNextControl) {
-    
     v4d_format(id + '_0');
     var o = gi(id + '_0');
     v4_replaceStyleRequired(o);
@@ -1906,6 +1872,10 @@ function v4t_keyDown(event) {
     var o = e.target || e.srcElement;
     if (e.keyCode == 13) {
         v4_setFocus2NextCtrl();
+        return false;
+    }
+    if (o.nodeName == 'TEXTAREA' && e.keyCode == 9) {
+        v4_setFocus2NextCtrl(null, true);
         return false;
     }
     v4_replaceStyleRequired(o);
@@ -1992,18 +1962,27 @@ function v4d_format(id) {
 id - идентификатор контрола
 goToNextControl - переводить ли фокус на следующий контрол
 */
-function v4_ctrlChanged(id, goToNextControl, isDatePicker) {
-
-    if (isDatePicker) v4d_format(id + '_0');
-    var o = gi(id + '_0');
-    v4_replaceStyleRequired(o);
-    if (o.value != o.getAttribute('t')) {
-        cmd('ctrl', id, 'v', o.value);
+function v4_ctrlChanged(id, goToNextControl, isDatePicker, isMonthFormat) {
+    if (isDatePicker && isMonthFormat) {
+        var o = gi(id + '_0');
+        cmd('ctrl', id, 'v', o.value, 't', o.value);
         if (goToNextControl) {
             v4_setFocus2NextCtrl(id + '_0');
         }
-    } else if (goToNextControl) {
-        v4_setFocus2NextCtrl(id + '_0');
+    }
+    else
+    {
+        if (isDatePicker) v4d_format(id + '_0');
+        var o = gi(id + '_0');
+        v4_replaceStyleRequired(o);
+        if (o.value != o.getAttribute('t')) {
+            cmd('ctrl', id, 'v', o.value);
+            if (goToNextControl) {
+                v4_setFocus2NextCtrl(id + '_0');
+            }
+        } else if (goToNextControl) {
+            v4_setFocus2NextCtrl(id + '_0');
+        }
     }
 }
 

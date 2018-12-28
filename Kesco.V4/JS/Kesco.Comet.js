@@ -35,8 +35,9 @@ function v4_connectComet(cmd) {
             async: true,
             type: "POST",
             url: url,
-            timeout: 600000,           
+            timeout: 60000,           
             cache:false,
+			xhrFields:{withCredentials:true},
             // Если запрос завершился успехом, значит сервер сообщил о новых событиях
             // обрабатываем их
             success: function(data) {
@@ -66,6 +67,7 @@ function v4_updateStateComet(data, inx) {
         async: true,
         type: "POST",
         url: url,
+		xhrFields:{withCredentials:true},
         success: function () {
             v4_connectComet('reconnect');
         },
@@ -81,6 +83,7 @@ function v4_unregisterComet() {
     $.ajax({
         async: false,
         type: "POST",
+		xhrFields:{withCredentials:true},
         url: url
     });
 }
@@ -92,6 +95,7 @@ function v4_cometSendMessage(message) {
     $.ajax({
         async: true,
         type: "POST",
+		xhrFields:{withCredentials:true},
         data: "{ 'message': '" + escape(message) + "'}",
         contentType: "application/json; charset=utf-8",
         dataType: "json",

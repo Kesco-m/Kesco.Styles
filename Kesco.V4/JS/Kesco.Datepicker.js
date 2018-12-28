@@ -74,8 +74,9 @@ var v4_Datepicker = new function () {
             alert("Не удалось инициализировать элемент управления v4_Datepicker. Не передан Id.")
             return;
         }
+        
+        //console.log(ctrlId + "->" + monthformat)
         var idContainer = ctrlId.substring(0, ctrlId.length - 2);
-
         $("#" + ctrlId)
             .datepicker({
             firstDay: 1,
@@ -107,9 +108,11 @@ var v4_Datepicker = new function () {
                 }
             },
             onSelect: function (date) {
-                if (monthformat != 'True') {
+                if (monthformat == 'True')
+                    window.setTimeout("v4_ctrlChanged('" + idContainer + "',true, true, true);", 10);
+                else
                     window.setTimeout("v4_ctrlChanged('" + idContainer + "',true, true);", 10);
-                }
+                
             }
         }).next(".ui-datepicker-trigger").addClass("v4s_btn");
         
@@ -133,8 +136,12 @@ var v4_Datepicker = new function () {
                 var month = $("#ui-datepicker-div .ui-datepicker-month :selected").val();
                 var year = $("#ui-datepicker-div .ui-datepicker-year :selected").val();
                 var date = new Date(year, month, 1);
-                this._setDateDatepicker($(id), date);
-                this._selectDate(id, this._getDateDatepicker($(id)));
+                //this._setDateDatepicker($(id), date);
+                //this._selectDate(id, this._getDateDatepicker($(id)));
+
+                $(id).datepicker('setDate', date).datepicker('hide').blur();
+                var idCurrent = id.substring(1, id.length - 2);
+                window.setTimeout("v4_ctrlChanged('" + idCurrent + "',true, true, true);", 0);
             }
         };
 
@@ -142,7 +149,6 @@ var v4_Datepicker = new function () {
             if (inst.input.val() === inst.lastVal) {
                 return;
             }
-
             var dateFormat = this._get(inst, "dateFormat"),
 			dates = inst.lastVal = inst.input ? inst.input.val() : null,
 			defaultDate = this._getDefaultDate(inst),
@@ -153,6 +159,7 @@ var v4_Datepicker = new function () {
                 dateFormat = "dd MM yy";
                 dates = "01 " + dates;
             }
+            
             try {
                 date = this.parseDate(dateFormat, dates, settings) || defaultDate;
             } catch (event) {
@@ -165,11 +172,12 @@ var v4_Datepicker = new function () {
             inst.currentMonth = (dates ? date.getMonth() : 0);
             inst.currentYear = (dates ? date.getFullYear() : 0);
             this._adjustInstDate(inst);
+            
         }
         
         //локализация
         $.datepicker.setDefaults($.datepicker.regional[culture]);
-        
+
     };
    
 };
