@@ -2803,7 +2803,7 @@ function v4_returnValueSetCookie(value) {
 
 function v4_returnValue(id, name) {
     var mvc = $.v4_urlParams("mvc");
-    if (mvc == 1) {
+    if (mvc == 1 || mvc == 4) {
         var result = [];
 
         result[0] = {
@@ -2819,7 +2819,7 @@ function v4_returnValue(id, name) {
 
 function v4_returnValueArray(arr) {
     var mvc = $.v4_urlParams("mvc");
-    if (mvc == 1)
+    if (mvc == 1 || mvc == 4)
         v4_returnValuePostForm(arr, true);
     else {
 
