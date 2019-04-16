@@ -1,7 +1,15 @@
 ﻿/*Общие стили html-элементов*/
-* {font-family: Verdana; font-size: 8pt;} 
-body{background:whitesmoke;margin: 0px;}
+* {font-family: Verdana; font-size: 8.25pt;} 
+
+body{background:whitesmoke; margin: 0px;}
 body:not(:-moz-handler-blocked) fieldset {display: table-cell;}
+
+/*Стили элементов при установке фокуса*/
+input:focus { outline:1px solid #3399FF !important;}
+button:focus { outline: 1px solid #3399FF !important; }
+img:focus { outline: 1px solid #3399FF !important; }
+a:focus { outline: 1px solid #3399FF !important; }
+
 /*Стили для ссылки*/
 a {text-decoration:none; color: black}
 a:hover {text-decoration: underline; color: #3399FF}
@@ -66,18 +74,24 @@ input[type=radio]{margin: 0px; margin-top: -1px; vertical-align: middle;}
 /*Стили для наименования контрола*/
 .v4caption { display: inline-block; vertical-align: bottom; margin-bottom: 5px;margin-right: 5px; }
 
+
 /*Стили для таблиц, отрисовка которых происходит вручную*/
 table th{ text-align: center !important; white-space: nowrap;}
 table.grid	{border-collapse:collapse; border-top: 1px solid darkgray; border-left: 1px solid darkgray ;}
-.grid td	{border-bottom: 1px solid darkgray ;	border-right: 1px solid darkgray ; }
-.grid tr:nth-of-type(odd) {background-color: white !important;}
-.grid tr:nth-of-type(even) {background-color: whitesmoke !important;}
+.grid td	{border-bottom: 1px solid darkgray; border-right: 1px solid darkgray ; }
+.grid tr:nth-of-type(odd) {background-color: whitesmoke !important;}
+.grid tr:nth-of-type(even) {background-color: white !important;}
+
+table.gridGroup	{border-collapse:collapse; border-top: 1px solid darkgray; border-left: 1px solid darkgray ;}
+.gridGroup td {border-bottom: 1px solid darkgray; border-right: 1px solid darkgray ; }
+.gridGroup .grouping  {background-color: whitesmoke !important; color: black}
+.gridGroup tr {background-color: white;}
 
 table.gridSelect {border-collapse:collapse; border-spacing:0px 0px}
 .gridSelect td	{border-bottom: 1px solid darkgray ;padding: 0px;padding-left: 3px; padding-right: 3px; }
 .gridHeaderSelect td {background-color: #E9E9E9 !important; color: black !important; text-align: center; border-right: 1px solid darkgray   !important; }
 
-.gridHeader th {background-color: #E9E9E9 !important; color: black !important; text-align: center; border-right: 1px solid darkgray   !important; height: 25px;}
+.gridHeader th {background-color: #E9E9E9 !important; color: black !important; text-align: center; border-right: 1px solid darkgray   !important; border-bottom: 1px solid darkgray   !important; height: 25px;}
 .gridHeader td {background-color: #E9E9E9 !important; color: black !important; text-align: center; border-right: 1px solid darkgray   !important; height: 25px;}
 .gridWrapper{overflow: auto;position: relative;}
 
@@ -117,6 +131,18 @@ table.gridSelect {border-collapse:collapse; border-spacing:0px 0px}
 	top: 0px; 
 	left: 0px; 
 }
+
+/*Стили для кнопок*/
+.v4divButtonHeader {
+	background: #e9e9e9; 
+	border-top: solid #d4d0c8 1px; 
+	border-left: solid #d4d0c8 1px; 
+	border-bottom: solid #d4d0c8 1px; 
+	border-right: solid #d4d0c8 1px;  
+	padding: 1px;  
+	top: 0px; 
+	left: 0px; 
+}
 .v4menuTable { border-spacing: 0px; border: 1px solid #d4d0c8;} 
 .v4menuTable td {padding: 0px; background-color:  #e9e9e9; } 
 .v4menuArrowDown{vertical-align:middle; padding-top: 3px; float: right;}
@@ -131,22 +157,26 @@ table.gridSelect {border-collapse:collapse; border-spacing:0px 0px}
 .v4div-inner-container {display: table-cell;text-align: center;vertical-align: middle;}
 .v4div-centered-content {background: white; border: 1px solid darkgray ; display: inline-block; position: relative; padding: 3px;text-align: left;z-index: 9999;max-width: 500px;} 
 
+.v4Error{font-family: verdana;color: red;}
+.v4Information{font-family: verdana;color: gray;}
+.v4Recommended{font-family: verdana;color: #3399FF;}
+
 /*Стили уведомлений сообщений о результах проверки значений контролов*/
-.v4NtfError{font-size: 7pt; font-family: verdana;color: red;}
-.v4NtfInformation{font-size: 7pt; font-family: verdana;color: gray;}
-.v4NtfRecommended{font-size: 7pt; font-family: verdana;color: #3399FF;}
+.v4NtfError{font-size: 7.5pt; font-family: verdana;color: red;}
+.v4NtfInformation{font-size: 7.5pt; font-family: verdana;color: gray;}
+.v4NtfRecommended{font-size: 7.5pt; font-family: verdana;color: #3399FF;}
 
 .v4-dialog-noclose .ui-dialog-titlebar-close {display: none }
 .v4-dialog-confirm .ui-dialog-buttonpane {text-align: center; }
 .v4-dialog-confirm .ui-dialog-buttonpane .ui-dialog-buttonset {float: none;}
  
 .v4PageHeader {position: fixed;top:0; left:0;width: 99.85%; }
-.v4pageTitle{display: block;font-size:10pt;font-weight: bold;}
+.v4pageTitle{display: block;font-size:9pt;font-weight: bold;}
 
-.v4DivTable { display:table; line-height:1.4}
+.v4DivTable { display:table; }
 .v4DivTableRow { display:table-row; }
 .v4DivTableCell { display:table-cell; text-align: center; vertical-align: middle;}
-.v4DivBlock {  display: block ;line-height:1.4}
+.v4DivBlock {  display: block ;}
 .v4DivInline {  display: inline-block; text-align: center; vertical-align: middle;}
 .v4PaddingCell {padding-right: 5px; white-space: nowrap;}
 .v4PaddingTop {padding-top: 5px;}
@@ -177,3 +207,9 @@ span.ui-selectmenu-text{line-height: normal !important;}
 
 .v4GridListGroup{ list-style-type: none;padding: 0px;margin: 0px;}
 .v4GridListGroup>li{display: inline-block; list-style: outside none none;float: left;width: auto;height:22px; border:1px solid #999999; padding-top:4px; background-color: #E9E9E9; margin-right:2px; font-weight:bold; vertical-align:middle;}
+
+/*Стиль дерева*/
+.v4Treeview{border-right: 2px dotted dimgray; min-width:300px; min-height: 100px; overflow:auto;}
+
+/*Стиль контейнера, включающего дерево*/
+.v4TreeViewContainer {min-width: 300px; float: left;}

@@ -82,7 +82,8 @@ var v4_buttonIcons = {
     Help: "ui-icon-help",
     Alert: "ui-icon-alert",
     Print: "ui-icon-print",
-    FolderOpen: "ui-icon-folder-open"
+    FolderOpen: "ui-icon-folder-open",
+	Swap: "ui-icon-arrowthick-2-n-s"
 }
 //Словарь для перехвата кнопок
 var v4_keys = { insert: 45, F2: 113 }; 
@@ -1731,7 +1732,10 @@ var v4s_onBlur = function (event) {
         }
     } else {
         if (document.activeElement == null || document.activeElement.id !== id) {
-            if (o.value != o.getAttribute('t')) o.value = '';
+            if (o.value != o.getAttribute('t')) {
+				o.value = '';
+				cmdasync('ctrl', id, 'tn', o.value);
+			}
             v4_replaceStyleRequired(o);
             v4s_hidePopup();
         }

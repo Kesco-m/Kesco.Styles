@@ -1,5 +1,42 @@
 ﻿// -------------------------------------------------------------------------------------------------------
 save_dialogShow.form = null;
+var v4_docDescription;
+
+$(document).ready(function() {
+    v4_docDescription = $("#v4_txaDocDesc_0").val();
+
+    $("#v4_txaDocDesc_0").on("input",
+        function(e) {
+            var input = $(this);
+            v4_txaDocDesc_change(input, 0);
+        });
+
+    $("#v4_txaDocDesc_0").focusout(function() {
+        var input = $(this);
+        v4_txaDocDesc_change(input, 1);
+    });
+});
+
+
+function v4_txaDocDesc_change(input, out) {
+    var val = input.val();
+    if (input.data("lastval") != val) {
+        input.data("lastval", val);
+        if (v4_docDescription != val)
+            $("#v4_btnTxaDocDesc").show();
+        else {
+            $("#v4_btnTxaDocDesc").hide();
+            if (out == 1) $("#btnRefresh").focus();
+        }
+    }
+}
+
+function v4_SaveDocumentDescription() {
+    v4_docDescription = $("#v4_txaDocDesc_0").val();
+    cmdasync('cmd', 'SaveDocumentDesription', 'Description', v4_docDescription);
+    $("#v4_btnTxaDocDesc").hide();
+}
+
 function save_dialogShow(title) {
     var idContainer = "v4_divSaveConfirm";
     if (null == save_dialogShow.form) {
