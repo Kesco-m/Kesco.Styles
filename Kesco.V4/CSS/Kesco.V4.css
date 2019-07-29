@@ -1,7 +1,7 @@
 ﻿/*Общие стили html-элементов*/
-* {font-family: Verdana; font-size: 8.25pt;} 
+* {font-family: Verdana, Tahoma, Arial, Helvetica, Sans-Serif; font-size: 8.25pt;} 
 
-body{background:whitesmoke; margin: 0px;}
+body{background:#efefef; margin: 0px;}
 body:not(:-moz-handler-blocked) fieldset {display: table-cell;}
 
 /*Стили элементов при установке фокуса*/
@@ -18,7 +18,7 @@ a:active{color:#3399FF; text-decoration: none;}
 img {vertical-align: middle;}
 /*table{padding: 0px; margin: 0px;}*/
 /*Стили для текстареа и легенды*/
-fieldset { min-width:100px; border: 1px solid #999999; padding-left: 0px; padding-right: 0px; padding-top:2px; padding-bottom:0px; margin-left: -1px;}
+fieldset { min-width:100px; border: 1px solid #999999; padding-left: 0px; padding-right: 0px; padding-top:2px; padding-bottom:0px;}
 textarea{width: 100%; overflow: auto; white-space: pre-wrap; word-wrap: break-word; border: 1px solid #999999;padding-top: -2px; padding-left: 1px; margin-left: -1px; margin-bottom: 0px; }
 /*Стили для кнопки, радиобатона, чекбокса и текстового поля ввода*/
 input[type=text]{width: 100%; height: 15px; border: 1px solid #999999; padding-top: -2px; padding-left: 1px; margin-left: -1px; margin-bottom: 0px; }
@@ -40,8 +40,28 @@ input[type=radio]{margin: 0px; margin-top: -1px; vertical-align: middle;}
 		  
 /*Стили для V4.Select*/
 .v4s {width: 100%;}
-.v4s_btn{width: 20px; height: 19px; padding: 0px; margin: 0px;  margin-right: -1px; background: buttonface no-repeat center center; border: 1px solid #999999; border-left:none; cursor: pointer !important;}	
-.v4s_btnDetail{width: 20px; height: 19px; padding: 0px; margin: 0px; background: url(/styles/detail.gif) buttonface no-repeat center center; border: 1px solid #999999;border-left:none;cursor: pointer !important;}	
+
+.v4s_btn {
+    width: 20px;
+    height: 19px;
+    padding: 0px;
+    margin: 0px;
+    margin-right: -1px;
+    background: buttonface no-repeat center center;
+    border: 1px solid #999999;
+    border-left: none;
+    cursor: pointer !important;
+}
+.v4s_btnDetail {
+    width: 20px;
+    height: 19px;
+    padding: 0px;
+    margin: 0px;
+    background: url(/styles/detail.gif) buttonface no-repeat center center;
+    border: 1px solid #999999;
+    border-left: none;
+    cursor: pointer !important;
+}	
 
 .v4s_required{background-color: #FFFF99;}
 
@@ -70,7 +90,7 @@ input[type=radio]{margin: 0px; margin-top: -1px; vertical-align: middle;}
 /*Стили для V4.Comet*/
 .v4comet { padding-left:5px; width:250px; position: fixed; z-index: 100;}
 /*Стили для V4.Chat*/
-.v4chat { width:400px; position: fixed; background:whitesmoke;text-align: left;font-weight: normal;z-index: 100; }
+.v4chat { width:400px; position: fixed; background:#efefef;text-align: left;font-weight: normal;z-index: 100; }
 /*Стили для наименования контрола*/
 .v4caption { display: inline-block; vertical-align: bottom; margin-bottom: 5px;margin-right: 5px; }
 
@@ -79,20 +99,20 @@ input[type=radio]{margin: 0px; margin-top: -1px; vertical-align: middle;}
 table th{ text-align: center !important; white-space: nowrap;}
 table.grid	{border-collapse:collapse; border-top: 1px solid darkgray; border-left: 1px solid darkgray ;}
 .grid td	{border-bottom: 1px solid darkgray; border-right: 1px solid darkgray ; }
-.grid tr:nth-of-type(odd) {background-color: whitesmoke !important;}
+.grid tr:nth-of-type(odd) {background-color: #efefef !important;}
 .grid tr:nth-of-type(even) {background-color: white !important;}
 
 table.gridGroup	{border-collapse:collapse; border-top: 1px solid darkgray; border-left: 1px solid darkgray ;}
 .gridGroup td {border-bottom: 1px solid darkgray; border-right: 1px solid darkgray ; }
-.gridGroup .grouping  {background-color: whitesmoke !important; color: black}
+.gridGroup .grouping  {background-color: #efefef !important; color: black}
 .gridGroup tr {background-color: white;}
 
 table.gridSelect {border-collapse:collapse; border-spacing:0px 0px}
 .gridSelect td	{border-bottom: 1px solid darkgray ;padding: 0px;padding-left: 3px; padding-right: 3px; }
-.gridHeaderSelect td {background-color: #E9E9E9 !important; color: black !important; text-align: center; border-right: 1px solid darkgray   !important; }
+.gridHeaderSelect td {background: #cccccc url(images/ui-bg_highlight-soft_75_cccccc_1x100.png) 50% 50% repeat-x; border: 1px solid #aaaaaa; color: black !important; text-align: center;}
 
-.gridHeader th {background-color: #E9E9E9 !important; color: black !important; text-align: center; border-right: 1px solid darkgray   !important; border-bottom: 1px solid darkgray   !important; height: 25px;}
-.gridHeader td {background-color: #E9E9E9 !important; color: black !important; text-align: center; border-right: 1px solid darkgray   !important; height: 25px;}
+.gridHeader th {background: #cccccc url(images/ui-bg_highlight-soft_75_cccccc_1x100.png) 50% 50% repeat-x; border: 1px solid #aaaaaa; color: black !important; text-align: center; height: 25px;}
+.gridHeader td {background: #cccccc url(images/ui-bg_highlight-soft_75_cccccc_1x100.png) 50% 50% repeat-x; border: 1px solid #aaaaaa; color: black !important; text-align: center; height: 25px;}
 .gridWrapper{overflow: auto;position: relative;}
 
 
@@ -113,7 +133,11 @@ table.gridSelect {border-collapse:collapse; border-spacing:0px 0px}
 #content p {margin: 0.5em 0 0 0;}
 #info {margin: 1em 0 1em 0; padding: 1em; border: solid 1px darkgray ;}
 
-.v4FormContainer{ margin-left: 8px;margin-top: 8px;}
+.v4FormContainer{ margin-left: 8px; margin-top: 8px;}
+.v4PageHeader {position: fixed;top: 0;width: 99.5%;}
+.v4PageDocHeader {clear: right;margin-left: 8px; margin-top: 8px;}
+
+.v4PageTitle {display: block; font-size: 9pt; font-weight: bold;}
 
 /*Стили для компаний в тултипе*/
 .v4_itemCompanyControl {cursor: pointer !important;}
@@ -122,31 +146,23 @@ table.gridSelect {border-collapse:collapse; border-spacing:0px 0px}
 .v4divHeader {
 	position: relative; 
 	width: 99.5%;
-	background: #e9e9e9; 
-	border-top: solid #d4d0c8 1px; 
-	border-left: solid #d4d0c8 1px; 
-	border-bottom: solid #d4d0c8 1px; 
-	border-right: solid #d4d0c8 1px;  
+	border: 1px solid #aaaaaa; background: #cccccc url(images/ui-bg_highlight-soft_75_cccccc_1x100.png) 50% 50% repeat-x;
 	padding: 0px;  
 	top: 0px; 
 	left: 0px; 
 }
 
 /*Стили для кнопок*/
-.v4divButtonHeader {
-	background: #e9e9e9; 
-	border-top: solid #d4d0c8 1px; 
-	border-left: solid #d4d0c8 1px; 
-	border-bottom: solid #d4d0c8 1px; 
-	border-right: solid #d4d0c8 1px;  
-	padding: 1px;  
+.v4divButtonHeader {	
+	border: 1px solid #aaaaaa; background: #cccccc url(images/ui-bg_highlight-soft_75_cccccc_1x100.png) 50% 50% repeat-x;
+	padding: 0px;  
 	top: 0px; 
 	left: 0px; 
 }
 .v4menuTable { border-spacing: 0px; border: 1px solid #d4d0c8;} 
-.v4menuTable td {padding: 0px; background-color:  #e9e9e9; } 
+.v4menuTable td {padding: 0px; background-color:  #cccccc; } 
 .v4menuArrowDown{vertical-align:middle; padding-top: 3px; float: right;}
-.v4menuButton{background-color:  #e9e9e9; text-align: left; border: 0px; padding: 0px;} 
+.v4menuButton{background-color:  #cccccc; text-align: left; border: 0px; padding: 0px;} 
 .v4menuButton:hover {background-color:#007fff;color: white;cursor: pointer;}   
 .v4menuButtonImage{height: 13px; position: absolute;margin-left: -4px;}
 .v4menuButtonTextWithImg{padding-left: 16px;white-space: nowrap;}  
@@ -166,24 +182,30 @@ table.gridSelect {border-collapse:collapse; border-spacing:0px 0px}
 .v4NtfInformation{font-size: 7.5pt; font-family: verdana;color: gray;}
 .v4NtfRecommended{font-size: 7.5pt; font-family: verdana;color: #3399FF;}
 
+.v4ContextHelp {cursor: help;}
+
 .v4-dialog-noclose .ui-dialog-titlebar-close {display: none }
 .v4-dialog-confirm .ui-dialog-buttonpane {text-align: center; }
 .v4-dialog-confirm .ui-dialog-buttonpane .ui-dialog-buttonset {float: none;}
  
-.v4PageHeader {position: fixed;top:0; left:0;width: 99.85%; }
-.v4pageTitle{display: block;font-size:9pt;font-weight: bold;}
+
 
 .v4DivTable { display:table; }
 .v4DivTableRow { display:table-row; }
 .v4DivTableCell { display:table-cell; text-align: center; vertical-align: middle;}
+.v4DivTableCellT {display: table-cell;text-align: center;vertical-align: top;}
+
 .v4DivBlock {  display: block ;}
 .v4DivInline {  display: inline-block; text-align: center; vertical-align: middle;}
 .v4PaddingCell {padding-right: 5px; white-space: nowrap;}
 .v4PaddingTop {padding-top: 5px;}
 .v4NumberTextAlign{ text-align: right !important;}
 .v4GridFilterText{ color: gray; padding-left: 15px;}
+.v4NoWrap {white-space: nowrap;} 
 
-.v4Bold{font-weight: bold !important;}
+.v4Bold {
+    font-weight: bold !important;
+}
 .v4HrPopup {
     border: none; /* Убираем границу для браузера Firefox */
     color: lightgray; /* Цвет линии для остальных браузеров */
@@ -194,8 +216,10 @@ table.gridSelect {border-collapse:collapse; border-spacing:0px 0px}
 .ui-datepicker {z-index: 99999 !important;}
 .ui-datepicker-weekend a {color: red !important;}
 .ui-datepicker-current {font-weight: bold !important; color: black !important;}
-
-.ui-dialog { z-index: 2000;overflow: visible;}
+.ui-widget-header{background: #cccccc url(images/ui-bg_highlight-soft_75_cccccc_1x100.png) 50% 50% repeat-x; border: 1px solid #aaaaaa}
+.ui-widget-content{background:#efefef !important;}
+.ui-widget input, .ui-widget select, .ui-widget textarea, .ui-widget button{font-family: Verdana, Tahoma, Arial, Helvetica, Sans-Serif !important; font-size: 8.25pt !important;}
+.ui-dialog { z-index: 20000;overflow: visible; padding-top:0px !important;margin-top:0px !important;}
 .ui-dialog .ui-dialog-content {overflow: inherit;}                                                                                                                                                           
 
 .ui-selectmenu-button {vertical-align: middle;margin-right: 1px;}   
@@ -206,10 +230,10 @@ span.ui-selectmenu-text{line-height: normal !important;}
 .v4TempHighlight {border: 2px solid red;font-weight: bold;}
 
 .v4GridListGroup{ list-style-type: none;padding: 0px;margin: 0px;}
-.v4GridListGroup>li{display: inline-block; list-style: outside none none;float: left;width: auto;height:22px; border:1px solid #999999; padding-top:4px; background-color: #E9E9E9; margin-right:2px; font-weight:bold; vertical-align:middle;}
+.v4GridListGroup>li{display: inline-block; list-style: outside none none;float: left;width: auto;height:22px; border:1px solid #999999; padding-top:4px; background-color: #cccccc; margin-right:2px; font-weight:bold; vertical-align:middle;}
 
 /*Стиль дерева*/
-.v4Treeview{border-right: 2px dotted dimgray; min-width:300px; min-height: 100px; overflow:auto;}
+.v4Treeview{border-right: 1px ridge #aaaaaa; min-width:300px; min-height: 100px; overflow:auto;}
 
 /*Стиль контейнера, включающего дерево*/
 .v4TreeViewContainer {min-width: 300px; float: left;}

@@ -1,4 +1,5 @@
-﻿var orderBy = 'L';
+﻿var orderByField = 'L';
+var orderByDirection = 'ASC';
 var searchText = '';
 var searchParam = '';
 var stateLoad = false;
@@ -10,7 +11,7 @@ v4_treeViewItemEdit_dialogShow.form = null;
 function v4_treeViewItemEdit_dialogShow(ctrlId, gridCmdListnerIndex, title, oktext, canceltext, type) {
     var idContainer = "divEditNode_" + ctrlId;
     if (null == v4_treeViewItemEdit_dialogShow.form) {
-        var width = 455;
+        var width = 500;
         var height = 150;
         var onOpen = function () { v4_treeViewOpenEditForm(); };
         var onClose = function () { v4_treeViewCloseEditForm(); };
@@ -234,6 +235,23 @@ function v4_HideSearchTreeView(ctrlId) {
     v4_treeViewHandleResize(ctrlId);
 }
 
+// Функция, устанавливающая текст результата поиска
+function v4_SetSearchResult(ctrlId, strResult, strEmptyResult) {
+	var searchCount = $('#divSearchCount_' + ctrlId);
+	var hSearchCountOld = searchCount.height();
+	if ($('#tbSearchText_' + ctrlId + '_0').val().length > 0) {
+		$('#divSearchCount_' + ctrlId).text(strResult);
+	}
+	else {
+		$('#divSearchCount_' + ctrlId).text(strEmptyResult);
+	}	
+    var hSearchCountNew = searchCount.height();
+    var hTree = $('#divTreeView_' + ctrlId).height();
+    if (hSearchCountOld != hSearchCountNew) {
+		v4_treeViewSetHeight(ctrlId, hTree - hSearchCountNew);
+	}
+}
+
 function v4_GetTextNode(nodeId) {
     return $("#" + nodeId).attr("text");
 }
@@ -241,7 +259,7 @@ function v4_GetTextNode(nodeId) {
 // Функция изменения размера дерева, в зависимости от видимости внутренних панелей и внешних отступов
 // параметр hWithoutTree - высота внешних по отншению к дереву элементов в окне
 function v4_treeViewHandleResize(ctrlId) {
-	var hWithoutTree = $('#divTreeViewContainer_' + ctrlId).offset().top + 2;
+	var hWithoutTree = $('#divTreeViewContainer_' + ctrlId).offset().top + 3;
 	
     if (hWithoutTree == 0) hWithoutTree = HWithoutTree;
 	var h = $(window).height();
@@ -264,7 +282,7 @@ function v4_treeViewHandleResize(ctrlId) {
     v4_treeViewSetHeight(ctrlId, h - hTopMenu - hBottomMenu - hSearchPanel - hWithoutTree);
 }
 
-function v4_reloadOrderNode(ctrlId, order) {
+function v4_reloadOrderNode(ctrlId, field, direction) {
     var tree = $('#divTreeView_' + ctrlId);
     var selectedNode = tree.jstree().get_selected("id");
     var nodeid = "0";
@@ -273,11 +291,11 @@ function v4_reloadOrderNode(ctrlId, order) {
 	
     if (nodeid != null && nodeid != undefined) {
         v4_dt = new Date().getTime();
-        orderBy = order;
+        orderByField = field;
+		orderByDirection = direction;
         tree.jstree(true).refresh(nodeid);
     }
 }
-
 
 function v4_treeViewLoadSelectedData(ctrlId, treeView) {
     var tree = $('#divTreeView_' + ctrlId);
@@ -285,13 +303,11 @@ function v4_treeViewLoadSelectedData(ctrlId, treeView) {
     if (nd == null || nd == undefined) return;
     var nodeid = tree.jstree().get_selected("id")[0].id;
     if (v4_trees[ctrlId].isLoadData) {
-        Wait.render(true);
         cmdasync("cmd", "Listener", "ctrlId", v4_trees[ctrlId].cmdIndex, "cmdName", "LoadTreeViewData", "Id", nodeid);
     }
     $("#" + nodeid + "_anchor").focus();
     setTimeout("$('#" + nodeid + "_anchor').focus();", 1000);
 }
-
 
 function v4_reloadSearchNode(ctrlId, searchT, searchP) {
     hasSearched = true;
@@ -306,35 +322,63 @@ function v4_reloadSearchNode(ctrlId, searchT, searchP) {
     tree.jstree(true).refresh();
 }
 
-// Функция обновления выбранного узла
-function v4_reloadNode(ctrlId) {
+// Функция обновления узла
+function v4_reloadNode(ctrlId, nodeId) {
     var tree = $('#divTreeView_' + ctrlId);
-    var nd = tree.jstree().get_selected("id")[0];
-    if (nd == null || nd == undefined) return;
-    var nodeid = nd.id;
-    v4_dt = new Date().getTime();
-    tree.jstree(true).refresh_node(nodeid);
+    tree.jstree(true).refresh_node(nodeId);
 }
 
+// Функция удаления узла
+function v4_deleteNode(ctrlId, nodeId) {
+	var tree = $('#divTreeView_' + ctrlId);
+	var node = tree.jstree(true).get_node(nodeId);
+	var parentId = $("#" + nodeId).attr("parentId");
+	var childrens = node.children;
+	if (!node.state.loaded || childrens && childrens.length > 0) {
+		v4_reloadParentNode(ctrlId, nodeId);
+	}
+	else {
+		tree.jstree(true).delete_node(nodeId);
+		v4_changeNodeType(ctrlId, parentId);
+	}
+}
+
+// Функция смены типа узла
+function v4_changeNodeType(ctrlId, nodeId) {
+	if (nodeId == "0") return;
+	var tree = $('#divTreeView_' + ctrlId);
+	var node = tree.jstree(true).get_node(nodeId);
+	if (!node) return;
+	var childrens = node.children;
+	if (!childrens) return;
+	var type = 'file';
+	if (childrens.length > 0) type = 'folder';
+	node.original.type = type;
+}
+
+
 // Функция обновления родительского узла
-function v4_reloadParentNode(ctrlId) {
+function v4_reloadParentNode(ctrlId, nodeId) {
     var tree = $('#divTreeView_' + ctrlId);
-    var nd = tree.jstree().get_selected("id")[0];
-    if (nd == null || nd == undefined) return;
-    var nodeid = nd.id;
-    //var parentnodeid = tree.jstree().get_node(nodeid).parent;
-
-    var parentnodeid = $("#" + nodeid).attr("parentId");
-	var childrens = tree.jstree().get_node(nodeid).children_d;
-
-	if (childrens.length == 0) {
+    var parentnodeid = $("#" + nodeId).attr("parentId");
+	if (!parentnodeid || parentnodeid == '0') {
 		v4_dt = new Date().getTime();
-		tree.jstree(true).refresh_node(parentnodeid);
+		tree.jstree(true).refresh();
 	}
 	else {
 		v4_dt = new Date().getTime();
-		tree.jstree(true).refresh(parentnodeid);
+		tree.jstree(true).refresh_node(parentnodeid);
 	}
+	
+	// var childrens = tree.jstree().get_node(nodeId).children;
+	// if (childrens && childrens.length > 0) {
+		// v4_dt = new Date().getTime();
+		// tree.jstree(true).refresh_node(parentnodeid);
+	// }
+	// else {
+		// v4_dt = new Date().getTime();
+		// tree.jstree(true).refresh(parentnodeid);
+	// }
 }
 
 // Функция обновления дерева
@@ -344,7 +388,8 @@ function v4_refreshNode(ctrlId) {
     if (nd == null || nd == undefined) return;
     var nodeid = nd.id;
 	v4_dt = new Date().getTime();
-    tree.jstree().refresh(nodeid);
+    //tree.jstree().refresh(nodeid);
+    tree.jstree(true).refresh();
 }
 
 // Функция сохранения state при unload страницы
@@ -374,16 +419,21 @@ function v4_treeViewInit(ctrlId) {
             'multiple': v4_trees[ctrlId].checkboxMultiple,
             'data': {
                 'url': v4_trees[ctrlId].jsonData,
+                'cache': false,
                 'data': function (node) {
                     return {
                         'nodeid': node.id,
+						'selectedids': v4_trees[ctrlId].selectedIds,
+						'rootids': v4_trees[ctrlId].rootIds,
                         'dt': v4_dt,
                         'return': v4_trees[ctrlId].returnData,
                         'returnType': v4_trees[ctrlId].returnType,
                         'loadId': v4_trees[ctrlId].loadId,
-                        'orderBy': orderBy,
+                        'orderByField': orderByField,
+						'orderByDirection': orderByDirection,
                         'searchText': searchText,
                         'searchParam': searchParam,
+						'searchShowTop': v4_trees[ctrlId].searchShowTop,
                         'stateLoad': stateLoad,
                         'idpage': v4_trees[ctrlId].pageId,
                         'ctrlid': ctrlId
@@ -392,8 +442,8 @@ function v4_treeViewInit(ctrlId) {
             },
 
             'check_callback': function (op, nodeSource, nodeDestination, pos, more) {
-                if (op == "edit") { return false; }
-                if (orderBy != 'L') { return false; }
+				if (op == "edit") { return false; }
+                if (orderByField != 'L') { return false; }
                 if ((op === "move_node" || op === "copy_node") && more && more.core) {
                     if (nodeSource.type && nodeSource.type == "root") return false;
                     if (nodeDestination.parent == null) return false;
@@ -404,7 +454,7 @@ function v4_treeViewInit(ctrlId) {
 
                     var nodeSourceName = $("#" + nodeSource.id).attr("text");
                     var nodeDestinationName = $("#" + nodeDestination.id).attr("text");
-
+					
                     if (nodeSource.parent == nodeDestination.id) {
                         /* Вы уверены что хотите изменить порядок расположений в рамках одной группы*/
                         if (!confirm(v4_trees[ctrlId].message1 + " [" + nodeDestinationName + "]?"))
@@ -435,7 +485,6 @@ function v4_treeViewEventBind(ctrlId) {
         }
         */
         if (v4_trees[ctrlId].isLoadData) {
-            Wait.render(true);
             cmdasync("cmd", "Listener", "ctrlId", v4_trees[ctrlId].cmdIndex, "cmdName", "LoadTreeViewData", "Id", data.node.id);
         }
     });
@@ -447,6 +496,9 @@ function v4_treeViewEventBind(ctrlId) {
 
 	// Обработчик события перемещения узла 
     $(tree).bind("move_node.jstree", function (e, data) {
+		$("#" + data.node.id).attr("parentId", data.parent);
+		v4_changeNodeType(ctrlId, data.old_parent);
+		v4_changeNodeType(ctrlId, data.parent);
         cmdasync("cmd", "Listener", "ctrlId", v4_trees[ctrlId].cmdIndex, "cmdName", "MoveTreeViewItem", "Id", data.node.id, "old_parent", data.old_parent, "new_parent", data.parent, "old_position", data.old_position, "new_position", data.position);
     });
 
@@ -462,14 +514,8 @@ function v4_treeViewEventBind(ctrlId) {
     // Обработчик события закрытия узла 
     $(tree).bind("close_node.jstree", function (e, data) {
         var node_id = (data.node.id); // element id
-        var childrens = data.node.children_d;
-        var childArr = new Array()
+        var childrens = data.node.children;
         for (var i = 0; i < childrens.length; i++) {
-            if (childArr.indexOf(childrens[i]) == -1 && childrens[i] != data.node.id)
-                childArr.push(childrens[i]);
-        }
-
-        for (var i = 0; i < childArr.length; i++) {
             $('#divTreeView_' + ctrlId).jstree().close_node(childrens[i]);
         }
     });
@@ -493,20 +539,21 @@ function v4_treeViewEventBind(ctrlId) {
 
         if (!v4_trees[ctrlId].rootCheckVisible)
             v4_treeViewHideRootNodeCheck(data, '0');
+		
+		if (hasSearched)
+			cmdasync("cmd", "Listener", "ctrlId", v4_trees[ctrlId].cmdIndex, "cmdName", "SetSearchCount");
     });
 
 	// Обработчик события загрузки узла 
     $(tree).bind("load_node.jstree", function (e, data) {
-        var currentNodeId = data.node.id;
-        var state = data.instance.get_state();
-        var strJson = JSON.stringify(state, ['checkbox']);
-        if (strJson.indexOf('"' + currentNodeId + '"') > -1)
-            data.instance.check_node(currentNodeId);
-        if (searchText != null && searchText != "") {
-            searchText = '';
-            cmdasync("cmd", "Listener", "ctrlId", v4_trees[ctrlId].cmdIndex, "cmdName", "SetSearchCount");
-        }
-
+		if (v4_trees[ctrlId].returnData == 2 && v4_trees[ctrlId].selectedIds.length > 0) {
+			var ids = v4_trees[ctrlId].selectedIds.split(',');
+			ids.forEach(function (item) {
+				data.instance.check_node(item);
+			});
+		}
+	
+		searchText = '';
     });
 
 	// Обработчик событий отметки/снятия галочек на узлах
@@ -522,12 +569,12 @@ function v4_treeViewEventBind(ctrlId) {
     
 	// Обработчик события готовности дерева
     $(tree).on('ready.jstree', function (e, data) {
+		stateLoad = false;
         if (v4_trees[ctrlId].isSaveState) {
             //v4_treeViewSetState(ctrlId, data);
             if (v4_trees[ctrlId].isSaveState && !v4_trees[ctrlId].isLoadById) {
                 window.addEventListener('beforeunload', function () { v4_SrvSendTreeViewState(ctrlId, data); });
             }
-            stateLoad = false;
             v4_treeViewLoadSelectedData(ctrlId, data);
         }
     });

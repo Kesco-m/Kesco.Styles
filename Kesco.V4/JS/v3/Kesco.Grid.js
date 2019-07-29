@@ -118,21 +118,18 @@ function v4_setStateCheckAllValues(idAll, className) {
 
 /*Отправка на сервер команды по сортировке указанной колоки*/
 function v4_setOrderByColumnValues(gridCmdListnerIndex, columnId, direction) {
-    Wait.render(true);
     setTimeout(v4_closeColumnSettingsForm, 10);
     cmdasync('cmd', 'Listener', 'ctrlId', gridCmdListnerIndex, 'cmdName', 'SetOrderByColumnValues', 'ColumnId', columnId, 'Direction', direction);
 }
 
 /*Отправка на сервер команды об очистке сортирвки указанной колонки*/
 function v4_clearOrderByColumnValues(gridCmdListnerIndex, columnId) {
-    Wait.render(true);
     setTimeout(v4_closeColumnSettingsForm, 10);
     cmdasync('cmd', 'Listener', 'ctrlId', gridCmdListnerIndex, 'cmdName', 'ClearOrderByColumnValues', 'ColumnId', columnId);
 }
 
 /*Получение значений фильтра для фильтра по значениям*/
 function v4_getColumnValuesFilter(gridCmdListnerIndex, className, columnId) {
-    Wait.render(true);
 
     var selector = "." + className + ":checkbox";
     var selector0 = "." + className + ":checkbox:checked";
@@ -180,7 +177,6 @@ function v4_openUserFilterForm(menuItem, gridCmdListnerIndex) {
 
 
     if (v4_isInt(filterId) && parseInt(filterId) <= 1) {
-        Wait.render(true);
         setTimeout(v4_closeColumnSettingsForm, 10);
         cmdasync('cmd', 'Listener', 'ctrlId', gridCmdListnerIndex, 'cmdName', 'SetFilterColumnByUser', 'ColumnId', columnId, "FilterId", filterId);
     } else
@@ -240,7 +236,6 @@ function v4_setFilterColumnByUser(gridId, gridCmdListnerIndex, columnId) {
     
     setTimeout(v4_closeColumnSettingsUserFilterForm, 10);
 
-    Wait.render(true);
     cmdasync('cmd', 'Listener', 'ctrlId', gridCmdListnerIndex, 'cmdName', 'SetFilterColumnByUser', 'ColumnId', columnId, "FilterId", filterId);
 
 }
@@ -249,7 +244,6 @@ function v4_setFilterColumnByUser(gridId, gridCmdListnerIndex, columnId) {
 function v4_clearFilterColumnValues(gridCmdListnerIndex, columnId) {
 
     setTimeout(v4_closeColumnSettingsForm, 10);
-    Wait.render(true);
     cmdasync('cmd', 'Listener', 'ctrlId', gridCmdListnerIndex, 'cmdName', 'ClearFilterColumnValues', 'ColumnId', columnId);
 }
 
@@ -349,7 +343,6 @@ function v4_gridEnableGrouping(gridId, gridCmdListnerIndex) {
             });
             if (ids.length == 0) return;
             
-            Wait.render(true);
             cmdasync('cmd', 'Listener', 'ctrlId', gridCmdListnerIndex, 'cmdName', 'ReorderColumns', 'ColumnIds', ids);
         },
 
@@ -404,14 +397,12 @@ function v4_gridEnableGrouping(gridId, gridCmdListnerIndex) {
 function v4_gridGroupingRemoveColumn(gridId, gridCmdListnerIndex, columnId) {
 
     $("li").has("div[column-id=" + columnId + "]").remove();
-    Wait.render(true);
     cmdasync('cmd', 'Listener', 'ctrlId', gridCmdListnerIndex, 'cmdName', 'GroupingRemoveColumn', 'ColumnId', columnId);
 }
 
 /*Сообщение на сервер о развернутой группе*/
 function v4_gridGroupingExpandColumn(gridId, gridCmdListnerIndex, columnId) {
     
-    Wait.render(true);
     cmdasync('cmd', 'Listener', 'ctrlId', gridCmdListnerIndex, 'cmdName', 'GroupingExpandColumn', 'ColumnId', columnId);
 }
 
@@ -426,7 +417,6 @@ function v4_gridGrouping(gridId, gridCmdListnerIndex, list) {
 
     });
 
-    Wait.render(true);
     cmdasync('cmd', 'Listener', 'ctrlId', gridCmdListnerIndex, 'cmdName', 'GroupingGridData', 'ColumnIds', ids);
 }
 

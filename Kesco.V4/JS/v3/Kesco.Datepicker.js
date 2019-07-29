@@ -16,7 +16,7 @@
 };
 
 $.datepicker.regional['et'] = {
-    applyText: 'Применить',
+    applyText: 'Rakendamiseks',
     closeText: 'Sulge',
     prevText: 'Eelmine kuu',
     nextText: 'Järgmine kuu',
@@ -33,7 +33,7 @@ $.datepicker.regional['et'] = {
 };
 
 $.datepicker.regional['de'] = {
-    applyText: 'Применить',
+    applyText: 'Bewerben',
     closeText: 'Schließen',
     prevText: 'Vorheriger monat',
     nextText: 'Nächsten monat',
@@ -50,9 +50,9 @@ $.datepicker.regional['de'] = {
 };
 
 $.datepicker.regional['it'] = {
-    applyText: 'Применить',
+    applyText: 'Per applicare',
     closeText: 'Chiudi',
-    prevText: 'Mese precedente',
+    prevText: 'Mois précédent',
     nextText: 'Il mese prossimo',
     currentText: 'Oggi',
     monthNames: ['Gennaio', 'Febbraio', 'Marzo', 'Aprile', 'Maggio', 'Giugno', 'Luglio', 'Agosto', 'Settembre', 'Ottobre', 'Novembre', 'Dicembre'],
@@ -61,6 +61,24 @@ $.datepicker.regional['it'] = {
     dayNamesShort: ['Dom', 'Lun', 'Mar', 'Mer', 'Gio', 'Ven', 'Sab'],
     dayNamesMin: ['Do', 'Lu', 'Ma', 'Me', 'Gi', 'Ve', 'Sa'],
     weekHeader: 'Settimana',
+    isRTL: false,
+    showMonthAfterYear: false,
+    yearSuffix: ''
+};
+
+//полностью перевести на французский
+$.datepicker.regional['fr'] = {
+    applyText: 'À appliquer',
+    closeText: 'Fermer',
+    prevText: 'Mese precedente',
+    nextText: 'Mois prochain',
+    currentText: 'Aujourd\'hui',
+    monthNames: ['Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre'],
+    monthNamesShort: ['Jan', 'Fév', 'Mar', 'Avr', 'Mai', 'Jui', 'Jul', 'Aoû', 'Sep', 'Oct', 'Nov', 'Déc'],
+    dayNames: ['Le dimanche', 'Le lundi', 'Mardi', 'Le mercredi', 'Jeudi', 'Vendredi', 'Samedi'],
+    dayNamesShort: ['Dim', 'Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam'],
+    dayNamesMin: ['Di', 'Lu', 'Ma', 'Me', 'Je', 'Ve', 'Sa'],
+    weekHeader: 'La semaine',
     isRTL: false,
     showMonthAfterYear: false,
     yearSuffix: ''

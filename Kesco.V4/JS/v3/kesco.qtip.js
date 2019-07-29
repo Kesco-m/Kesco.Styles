@@ -32,7 +32,7 @@
             target: $element,
             container: $span.find(':first'),
             my: 'middle left',
-            at: 'middle right',
+            at: 'middle left',
             viewport: $(window),
             adjust: { method: 'shift' }
         };

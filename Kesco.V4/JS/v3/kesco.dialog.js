@@ -151,7 +151,6 @@ replaceOptions || {}
 
         closeDialogEx: function (wnd, dialogResult) {
             var name = null, wndInfo = null;
-
             window.self.focus();
 
             for (var p in _windows) {

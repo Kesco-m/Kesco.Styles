@@ -14,9 +14,13 @@ var v4CometUrl_Template = "";
 var v4_isStopBlur = false;
 /*Глобальное свойство, определяющее элемент управления, на который надо установить фокус, после потери фокуса текущим контролом*/
 var v4_setBlur = '';
+/*Глобальное свойство, определяющее выполнять ли асинхронную команду*/
+var v4_stopAsyncEvent = false;
+
 /*Глобальная переменная для фиксации времени последнего обращения к серверу*/
 var v4_timeOfLastRequest = new Date();
 var v4_dt = new Date().getTime();
+
 /*Глобальный объект всплывающего popup-окна, одномоментно существовать на странице может только один такой объект */
 var v4s_popup = null;
 /*Глобальное свойство, определяющее: открыт ли popup-объект на странице, влияет на своевременное закрытия popup-div*/
@@ -28,8 +32,6 @@ var v4f_isPopupOpen = false;
 /*Название клиентского компьютера*/
 var v4_clientName = '';
 
-/*Глобальное свойство, определяющее: приложение открыто в старом браузере IE*/
-var isIE8 = false;
 /*Глобальное свойство, определяющее: запрашивать ли подтверждение у пользователя при закрытии/уходе страницы при несохраненных данных*/
 var isAsk = false;
 /*Глобальное свойство, определяющее: данные на страницы были изменены пользователем*/
@@ -73,7 +75,7 @@ var v4_buttonIcons = {
     Run: "ui-icon-triangle-1-e",
     Cancel: "ui-icon-closethick",
     Search: "ui-icon-search",
-    Settings: "ui-icon-gear",
+    Settings: "ui-icon-wrench",
     Refresh: "ui-icon-refresh",
     Close: "ui-icon-arrowthick-1-e",
     Copy: "ui-icon-copy",
@@ -83,7 +85,12 @@ var v4_buttonIcons = {
     Alert: "ui-icon-alert",
     Print: "ui-icon-print",
     FolderOpen: "ui-icon-folder-open",
-	Swap: "ui-icon-arrowthick-2-n-s"
+    Swap: "ui-icon-arrowthick-2-n-s",
+    Person: "ui-icon-person",
+    Wrench: "ui-icon-wrench",
+	SortAsc: "ui-icon-arrowthick-1-n",
+    SortDesc: "ui-icon-arrowthick-1-s",
+    Check: "ui-icon-arrowrefresh-1-e"
 }
 //Словарь для перехвата кнопок
 var v4_keys = { insert: 45, F2: 113 }; 
@@ -102,20 +109,27 @@ var v4_top = 0;
 var v4_left = 0;
 
 /*Глобальный объект, нербходимый для опеделения текущего броузера*/
-var browser = navigator.userAgent;
-var chrome = browser.indexOf('Chrome') > -1;
-var safari = browser.indexOf("Safari") > -1;
-var firefox = browser.indexOf('Firefox') > -1;
-var explorer = browser.indexOf('MSIE') > -1;
-var opera = browser.toLowerCase().indexOf("op") > -1;
+// Opera 8.0+
+var IsOpera = (!!window.opr && !!opr.addons) || !!window.opera || navigator.userAgent.indexOf(' OPR/') >= 0;
+// Firefox 1.0+
+var IsFirefox = typeof InstallTrigger !== 'undefined';
+// Safari 3.0+ "[object HTMLElementConstructor]" 
+var IsSafari = /constructor/i.test(window.HTMLElement) || (function (p) { return p.toString() === "[object SafariRemoteNotification]"; })(!window['safari'] || (typeof safari !== 'undefined' && safari.pushNotification));
 
-if ((chrome) && (safari)) safari = false;
-if ((chrome) && (opera)) chrome = false;
+/*Глобальное свойство, определяющее: приложение открыто в старом браузере IE*/
+var IsIE8 = false;
+// Internet Explorer 6-11
+var IsIE = /*@cc_on!@*/false || !!document.documentMode;
+// Edge 20+
+var IsEdge = !IsIE && !!window.StyleMedia;
+// Chrome 1 - 71
+var IsChrome = !!window.chrome && (!!window.chrome.webstore || !!window.chrome.runtime);
+
 
 /*Эмуляция нажатия на ссыллку*/
 function v4_evalHref(id) {
     
-    if (!safari) {
+    if (!IsSafari) {
         $('#' + id)[0].click();
         return;
     }
@@ -273,6 +287,7 @@ Event.add(document, 'keydown', v4_keyDown);
 /*Глобальный перехват изменения размеров окна*/
 Event.add(window, 'resize', v4_checkPopUp);
 
+
 /*================================== Общие функции. Исключения по именам в связи с частым использованием ==============================*/
 function v4_showSaveData(event) {
     var ev = window.event || event;
@@ -314,11 +329,15 @@ function cmd() {
 
 /*Функция отправки асинхронного зароса на сервер*/
 function cmdasync() {
+    if (v4_stopAsyncEvent) return;
+   
+    Wait.render(true); 
     var urlBase = window.location.pathname + "?idp=" + idp;
     var url = urlBase;
     for (var i = 0; i < arguments.length; i = i + 2) {
-        url += '&' + arguments[i] + '=' + encodeURIComponent(arguments[i + 1]);
+            url += '&' + arguments[i] + '=' + encodeURIComponent(arguments[i + 1]);
     }
+    //console.log("cmdasync ->" + url);
     url += '&wait=1';
     v4_xmlHTTP = v4_getXmlHTTP();
     v4_xmlHTTP.onreadystatechange = function () {
@@ -449,7 +468,7 @@ function v4_keyDown(event) {
     var key = v4_getKeyCode(event);
 
     if (v4_helpURL != null && key == 112) {
-        if (browser.search(/msie/i) == -1) {
+        if (!IsIE) {
             event.stopPropagation();
             event.preventDefault();
         }
@@ -642,8 +661,8 @@ function v4_setFocus2NextCtrl(id, tab) {
                     v4_setFocus2NextCtrl(nctrl.id);
                 } else {
 			        if($('#'+nctrl.id).is(':visible')){
-				        nctrl.focus();
-			        }
+                        nctrl.focus();
+                    }
 			        else
 			        {
 				         v4_setFocus2NextCtrl(nctrl.id);
@@ -963,8 +982,6 @@ function v4_closeWindowByIdp(widp, isframe) {
 
 /*Функция устанавливает размеры и положение окна обозревателя*/
 function v4_setWindowSizePos(x, y, width, height) {
-    window.addEventListener('beforeunload', v4_SrvSendWindowSizePos, false);
-
     var cw = width;
     var ch = height;
 
@@ -987,10 +1004,17 @@ function v4_setWindowSizePos(x, y, width, height) {
         } catch (e) { }
     }
     try {
-        window.moveTo(x, y);
+        //var dualScreenLeft = window.screenLeft != undefined ? window.screenLeft : screen.left;
+        //var dualScreenTop = window.screenTop != undefined ? window.screenTop : screen.top;
+
+        //window.moveTo(x, y);
     }catch(e){}
 }
 
+/*Функция сохранения размеров и положения окна, подписывается на событие закрытия окна*/
+function v4_setBeforeUnload() {
+    //window.addEventListener('beforeunload', v4_SrvSendWindowSizePos, false);
+}
 
 /*Функция передает размеры и положение окна обозревателя на сервер*/
 function v4_SrvSendWindowSizePos() {
@@ -1026,7 +1050,7 @@ function v4_SrvSendWindowSizePos() {
 function v4_init() {
     
     if (window.innerWidth == undefined) {
-        isIE8 = true;
+        IsIE8 = true;
     }
     if (isAsk)
         v4_onload();
@@ -1038,11 +1062,14 @@ function v4_init() {
             var ifrObj = $(this);
             if (ifrObj.length == 0) return true;
             if (ifrObj[0].contentWindow == null) return true;
-
-            var iframe_idp = ifrObj[0].contentWindow.idp;
+            var iframe_idp;
+            try {
+                iframe_idp = ifrObj[0].contentWindow.idp;
+            } catch (e) {
+            }
             var iframe_id = $(this).attr("id");
             if (iframe_idp) {
-                v4_closeIFrameSrc(iframe_id, iframe_idp );
+                v4_closeIFrameSrc(iframe_id, iframe_idp);
             }
         });
 
@@ -1083,11 +1110,16 @@ function v4_init() {
     }
 
     $("#pageHeader button").button();
+    setTimeout(function() {
+        $("input.v4n").focusin(function () {
+            $(this).select();
+        });
+    }, 10);
 }
 
 /*Функция проверки несохраненных изменений на странице и вызов очистки ресурсов при закрытии страницы*/
 function v4_onload() {
-    if (isIE8) {
+    if (IsIE8) {
         window.onbeforeunload = v4_checkDataBeforeCloseWindow;
     }
     else {
@@ -1451,7 +1483,7 @@ function v4s_init() {
     v4s_popup.style.maxHeight = "250px";
     v4s_popup.style.overflow = "auto";
     v4s_popup.style.display = "none";
-    v4s_popup.style.zIndex = "10000";
+    v4s_popup.style.zIndex = "21000";
     v4s_isPopupOpen = false;
     v4f_isPopupOpen = false;
 
@@ -1475,6 +1507,7 @@ event - текущее событие
 rowIndex - индекс ряда в таблице с результати поиска
 */
 function v4s_popupClick(event, rowIndex) {
+   
     event = window.event || event;
     var o = null;
     if (rowIndex != null) {
@@ -1490,21 +1523,24 @@ function v4s_popupClick(event, rowIndex) {
     if (o.getAttribute('cmd') == null) return;
 
     if (o.getAttribute('cmd') == 'select') {
+        //console.log("v4s_popupClick select");
         var vn = o.getAttribute('idItem');
         var text = o.getAttribute('textItem');
         v4s_hidePopup();
-        cmdasync('ctrl', id, 'vn', vn, 'tn', text, 'next', 1);
         var ele = gi(id + '_0');
         if (ele != null) {
             v4_isStopBlur = true;
             v4_setBlur = id + '_0';
             ele.focus();
         }
+        cmdasync('ctrl', id, 'vn', vn, 'tn', text, 'next', 1);
+
     } else if (o.getAttribute('cmd') == 'new') {
         var tn = gi(id + '_0').value;
         v4s_hidePopup();
         cmd('ctrl', id, 'cmd', 'new', 'tn', tn);
     } else if (o.getAttribute('cmd') == 'search') {
+        //console.log("v4s_popupClick search");
         var ele = gi(id + '_0');
         if (ele != null) {
             ele.value = '';
@@ -1512,6 +1548,7 @@ function v4s_popupClick(event, rowIndex) {
         v4s_hidePopup();
         cmd('ctrl', id, 'cmd', 'search');
     } else if (o.getAttribute('cmd') == 'create') {
+        //console.log("v4s_popupClick create");
         v4s_hidePopup();
         var idUrl = o.getAttribute('idUrl');
         if (idUrl == null || idUrl == '') {
@@ -1520,6 +1557,7 @@ function v4s_popupClick(event, rowIndex) {
         }
         cmd('ctrl', id, 'cmd', 'create', 'idUrl', idUrl);
     } else if (o.getAttribute('cmd') == 'setHead') {
+        //console.log("v4s_popupClick setHead");
         v4s_hidePopup();
         cmd('ctrl', id, 'cmd', 'setHead', 'val', o.getAttribute('idItem'));
         var element = gi(id + '_0');
@@ -1602,8 +1640,7 @@ function v4s_showPopup(id, fullResult) {
     if (gi(id)) {
         gi(id).focus();
     }
-    //Wait.render(false);
-}
+  }
 
 /*Функция открытия popup для выбора условий фильтрации
 id - идентификатор основного контрола
@@ -1640,14 +1677,17 @@ function v4s_btnStyle(id) {
             v4s_btnStyle4Popup(btn, id);
             return;
         }
+        btn.innerHTML = '';
         btn.value = '';
         btn.style.backgroundImage = 'url(/styles/detail.gif)';
         btn.className = 'v4s_btnDetail';
+
         if (btn.getAttribute('urlShowEntity') != null)
             btn.onclick = function () { 
 					var _urlShowEntity = btn.getAttribute('urlShowEntity');
 					v4_windowOpen(_urlShowEntity + (_urlShowEntity.indexOf("?")>0 ? "&" : "?") + 'id=' + inp.getAttribute('v'), ''); 
 			};
+
         if (btn.getAttribute('funcShowEntity') != null)
             btn.onclick = function () {
                 var _scr = $.validator.format(btn.getAttribute('funcShowEntity'), inp.getAttribute('v'), id);
@@ -1660,6 +1700,7 @@ function v4s_btnStyle(id) {
 
 function v4s_btnStyle4Popup(btn, id) {
 
+    btn.innerHTML = '...';
         btn.value = '...';
         btn.style.backgroundImage = '';
         btn.className = 'v4s_btn';
@@ -1715,11 +1756,11 @@ function v4s_stopBlur(stop) {
 
 /*Функция-обработчик события потери фокуса контрола Select*/
 var v4s_onBlur = function (event) {
-
     if (v4_isStopBlur && v4s_isPopupOpen) {
         v4s_stopBlur(false);
         return;
     }
+    //console.log("v4s_onBlur");
 
     event = window.event || event;
     var o = event.target || event.srcElement;
@@ -1734,7 +1775,7 @@ var v4s_onBlur = function (event) {
         if (document.activeElement == null || document.activeElement.id !== id) {
             if (o.value != o.getAttribute('t')) {
 				o.value = '';
-				cmdasync('ctrl', id, 'tn', o.value);
+                cmdasync('ctrl', id, 'tn', o.value);
 			}
             v4_replaceStyleRequired(o);
             v4s_hidePopup();
@@ -1760,6 +1801,14 @@ function v4s_hidePopup(force) {
         v4f_isPopupOpen = false;
        
     }, 0);
+}
+
+function v4s_keyUp(event) {
+    event = window.event || event;
+    var e = event;
+    var o = e.target || e.srcElement;
+    var id = o.id.substring(0, o.id.length - 2);
+    v4s_btnStyle(id);
 }
 
 /*Функция-обработчик события изменения текста в контроле Select
@@ -1801,12 +1850,14 @@ function v4s_textChange(event, id, x) {
 event - текущее событие
 */
 function v4s_keyDown(event) {
+    
     event = window.event || event;
     var e = event;
     var o = e.target || e.srcElement;
     var id = o.id.substring(0, o.id.length - 2);
 
     if (v4s_isPopupOpen && e.keyCode != 13 && e.keyCode != 27) {
+        //console.log("v4s_keyDown 1"); 
         var t = v4s_popup.getElementsByTagName("TABLE")[0];
         if (t == null || t.rows.length == 0) return;
 
@@ -1831,6 +1882,7 @@ function v4s_keyDown(event) {
                 break;
             }
     } else if (v4s_isPopupOpen && e.keyCode == 13) {
+        //console.log("v4s_keyDown 2"); 
         var r = v4s_getSelectedRowIndex();
         if (r >= 0) {
             v4s_popupClick(null, r);
@@ -1864,18 +1916,21 @@ function v4s_keyDown(event) {
         return false;
     } 
     else if (!v4s_isPopupOpen && e.keyCode == 13) {
+        //console.log("v4s_keyDown 3 value->" + o.value); 
         if (o.value != null && (o.value.length == 0 || o.value != o.getAttribute('t'))) {
+           
             v4_isStopBlur = true;
             v4_setBlur = id + '_0';
             var searchText = (o.value != o.getAttribute('t')) ? o.value : "";
             var valueText = o.getAttribute('t');
-            //Wait.render(true);
+            //console.log("v4s_keyDown 3.1 value->" + o.value + " valueText->" + valueText + " searchText->" + searchText); 
             cmdasync('ctrl', id, 'tn', o.value, 'st', searchText, 'cmd', 'popup');
         } else {
             v4_setFocus2NextCtrl();
         }
         return false;
     } else if (!v4s_isPopupOpen && e.keyCode == 27) {
+        //console.log("v4s_keyDown 4"); 
         o.value = o.getAttribute('t');
         var inp = gi(id + '_0');
         var btn = gi(id + '_1');
@@ -1883,12 +1938,15 @@ function v4s_keyDown(event) {
         v4_replaceStyleRequired(o);
 
         if (btn != null) {
-            if ((btn.getAttribute('urlShowEntity') != null || btn.getAttribute('funcShowEntity') != null) && ((o != null && o.getAttribute('v') != "") || (inp != null && inp.getAttribute('v')!="")) ) {
+            if ((btn.getAttribute('urlShowEntity') != null || btn.getAttribute('funcShowEntity') != null) &&
+                ((o != null && o.getAttribute('v') != "") || (inp != null && inp.getAttribute('v') != ""))) {
                 btn.value = '';
                 btn.style.backgroundImage = 'url(/styles/detail.gif)';
                 btn.className = 'v4s_btnDetail';
                 if (btn.getAttribute('urlShowEntity') != null)
-                    btn.onclick = function () { v4_windowOpen(btn.getAttribute('urlShowEntity') + '?id=' + o.getAttribute('v'), ''); };
+                    btn.onclick = function() {
+                        v4_windowOpen(btn.getAttribute('urlShowEntity') + '?id=' + o.getAttribute('v'), '');
+                    };
                 if (btn.getAttribute('funcShowEntity') != null)
                     btn.onclick = function () {
                         var _scr = $.validator.format(btn.getAttribute('funcShowEntity'), inp.getAttribute('v'), id);
@@ -2077,7 +2135,7 @@ function v4_ctrlChanged(id, goToNextControl, isDatePicker, isMonthFormat) {
         var o = gi(id + '_0');
         v4_replaceStyleRequired(o);
         if (o.value != o.getAttribute('t')) {
-            cmd('ctrl', id, 'v', o.value);
+            cmd('ctrl', id, 'v', o.value, 'ov', o.getAttribute('ov'));
             if (goToNextControl) {
                 v4_setFocus2NextCtrl(id + '_0');
             }
@@ -2407,7 +2465,7 @@ var v4_dialog = v4_polymorph(
 
         if (!isForm) {
             var img = (status == null && !isForm) ? "alf.gif" : v4_getStatusIcon(status);
-            htmlContent = "<table><tr><td style='vertical-align: middle;text-align:left;padding-right:15px;'><img src='/styles/" + img + "' border=0/></td><td>" + htmlContent + "</td></tr></table>";
+            htmlContent = "<table class='dailog_table'><tr><td style='vertical-align: middle;text-align:left;padding-right:15px;'><img src='/styles/" + img + "' border=0/></td><td>" + htmlContent + "</td></tr></table>";
             dialogObj.html(htmlContent);
         } else
             closeOnEscape = false;
@@ -2423,7 +2481,10 @@ var v4_dialog = v4_polymorph(
             close: function () {
                 if (dialogDiv == null) $(this).dialog('destroy').remove();
                 v4s_hidePopup(true);
-            }
+            },
+			dragStart: function () {
+				v4s_hidePopup(true);
+			}
         });
 
         if (title == null || title == "") title = "[Не указан заголовок диалогового окна]";
@@ -2492,12 +2553,13 @@ var v4_dialog = v4_polymorph(
             var rnd = Math.floor(Math.random() * 16) + 5;
             dialogObj.dialog({ position: { my: "center center", at: "center+" + rnd + " center + " + rnd, of: window} });
         }
-        if (onOpen)
+        if (onOpen) {
             dialogObj.bind("dialogopen", onOpen);
+            $("[role = 'dialog']").find("input").css('outline', '');
+        }
 
         if (onClose)
             dialogObj.bind("dialogclose", onClose);
-
 
         return dialogObj;
     }
@@ -2610,7 +2672,7 @@ var v4_showConfirm = v4_polymorph(
         var onClose = function () { if (ctrlFocus) $("#" + ctrlFocus).focus(); v4_showConfirm_isOpen = false; v4s_hidePopup(true); };
 
         var dialogObj = v4_dialog(dialogId, message, null, title, 5, width, height, onOpen, onClose, buttons, null, false, false, true);
-
+        $('#' + dialogId).dialog('option', 'position', 'center');
         dialogObj.dialog("open");
     }
 
@@ -2682,7 +2744,7 @@ var v4_showConfirm = v4_polymorph(
 
         var onOpen = function () {
             setTimeout(function () {
-                $("#" + noId).focus();
+                $("#" + yesId1).focus();
             });
         };
         var onClose = function () { if (ctrlFocus) $("#" + ctrlFocus).focus(); v4s_hidePopup(true); };
@@ -2696,7 +2758,8 @@ var v4_showConfirm = v4_polymorph(
 
 //Функция вывода диалогового сообщения
 var v4_showMessage_isOpen = false;
-function v4_showMessage(message, title, status, ctrlFocus, width, height) {
+function v4_showMessage(message, title, status, ctrlFocus, width, height, scriptOk) {
+
     if (v4_showMessage_isOpen) return;
     v4_showMessage_isOpen = true;
 
@@ -2706,13 +2769,11 @@ function v4_showMessage(message, title, status, ctrlFocus, width, height) {
         {
             id: okId,
             text: "OK",
-//            icons: {
-//                primary: v4_buttonIcons.Ok
-//            },
             width: 75,
             click: function () {
                 $('#' + dialogId).dialog("close");
-                
+                if (scriptOk != null && scriptOk != "")
+                    eval(scriptOk);
             }
         }
     ];
@@ -2944,6 +3005,7 @@ function v4_returnValueArray(arr) {
         v4_returnValueSetCookie(val);
     }
 }
+
 
 /*------------------------------*/
 

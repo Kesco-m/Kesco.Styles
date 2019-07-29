@@ -12,7 +12,7 @@ function srv4js(func, args, callback, obj) {
     srv4js_obj = obj;
 
     if (srv4js_ctrl == null) {
-        if (chrome || safari || opera) return;
+        if (!IsIE) return;
 
         var bodyTags = document.getElementsByTagName("body");
         if (bodyTags.length == 0) {
