@@ -15,6 +15,23 @@
     yearSuffix: ''
 };
 
+$.datepicker.regional['en'] = {
+    applyText: 'Apply',
+    closeText: 'Close',
+    prevText: 'Previous month',
+    nextText: 'Next month',
+    currentText: 'Today',
+    monthNames: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
+    monthNamesShort: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+    dayNames: ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
+    dayNamesShort: ["sun", "mon", "tue", "wed", "thu", "fri", "sat"],
+    dayNamesMin: ["Sn", "Mn", "Tu", "We", "Th", "Fr", "Sat"],
+    weekHeader: 'Week',
+    isRTL: false,
+    showMonthAfterYear: false,
+    yearSuffix: ''
+};
+
 $.datepicker.regional['et'] = {
     applyText: 'Rakendamiseks',
     closeText: 'Sulge',

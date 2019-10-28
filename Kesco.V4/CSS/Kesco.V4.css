@@ -14,6 +14,7 @@ a:focus { outline: 1px solid #3399FF !important; }
 a {text-decoration:none; color: black}
 a:hover {text-decoration: underline; color: #3399FF}
 a:active{color:#3399FF; text-decoration: none;}
+
 /*Стили для картинки и таблицы*/
 img {vertical-align: middle;}
 /*table{padding: 0px; margin: 0px;}*/
@@ -25,6 +26,8 @@ input[type=text]{width: 100%; height: 15px; border: 1px solid #999999; padding-t
 input[type=checkbox]{margin: 0px;}
 input[type=radio]{margin: 0px; margin-top: -1px; vertical-align: middle;}
 /*input[type=button]{margin: 0px;}*/
+
+.v4_modified{ outline: 1px solid goldenrod; }
 
 .v4btnWidth70 button { width:70px; }
 .v4btnWidth125 button { width:125px; height:50px; }
@@ -39,7 +42,6 @@ input[type=radio]{margin: 0px; margin-top: -1px; vertical-align: middle;}
 .v4_p_clause{width:100%; font-size: 7pt !important; background-color: white; cursor: pointer !important;}
 		  
 /*Стили для V4.Select*/
-.v4s {width: 100%;}
 
 .v4s_btn {
     width: 20px;
@@ -87,8 +89,8 @@ input[type=radio]{margin: 0px; margin-top: -1px; vertical-align: middle;}
 .v4n input[type=text]{text-align: right;}
 /*Стили для V4.CheckBox*/
 .v4ch {padding-top:4px;}
-/*Стили для V4.Comet*/
-.v4comet { padding-left:5px; width:250px; position: fixed; z-index: 100;}
+/*Стили для V4.Signal*/
+.v4signal { padding-left:5px; width:250px; position: fixed; z-index: 100;}
 /*Стили для V4.Chat*/
 .v4chat { width:400px; position: fixed; background:#efefef;text-align: left;font-weight: normal;z-index: 100; }
 /*Стили для наименования контрола*/
@@ -171,7 +173,7 @@ table.gridSelect {border-collapse:collapse; border-spacing:0px 0px}
 
 .v4div-outer-container {display: table;height: 90%;position: absolute;width: 90%;}
 .v4div-inner-container {display: table-cell;text-align: center;vertical-align: middle;}
-.v4div-centered-content {background: white; border: 1px solid darkgray ; display: inline-block; position: relative; padding: 3px;text-align: left;z-index: 9999;max-width: 500px;} 
+.v4div-centered-content {background: white; border: 1px solid darkgray ; display: inline-block; position: relative; padding: 3px;text-align: left;z-index: 22000;max-width: 500px;} 
 
 .v4Error{font-family: verdana;color: red;}
 .v4Information{font-family: verdana;color: gray;}
@@ -187,13 +189,11 @@ table.gridSelect {border-collapse:collapse; border-spacing:0px 0px}
 .v4-dialog-noclose .ui-dialog-titlebar-close {display: none }
 .v4-dialog-confirm .ui-dialog-buttonpane {text-align: center; }
 .v4-dialog-confirm .ui-dialog-buttonpane .ui-dialog-buttonset {float: none;}
- 
-
 
 .v4DivTable { display:table; }
 .v4DivTableRow { display:table-row; }
 .v4DivTableCell { display:table-cell; text-align: center; vertical-align: middle;}
-.v4DivTableCellT {display: table-cell;text-align: center;vertical-align: top;}
+.v4DivTableCellT {display: table-cell;text-align: left; vertical-align: top; width: 1px;}
 
 .v4DivBlock {  display: block ;}
 .v4DivInline {  display: inline-block; text-align: center; vertical-align: middle;}
@@ -201,7 +201,8 @@ table.gridSelect {border-collapse:collapse; border-spacing:0px 0px}
 .v4PaddingTop {padding-top: 5px;}
 .v4NumberTextAlign{ text-align: right !important;}
 .v4GridFilterText{ color: gray; padding-left: 15px;}
-.v4NoWrap {white-space: nowrap;} 
+.v4NoWrap {white-space: nowrap;}
+.v4Grid {min-height: 50px;}
 
 .v4Bold {
     font-weight: bold !important;

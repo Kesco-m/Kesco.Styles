@@ -1,7 +1,7 @@
 ﻿/*Расширения контрола qTip для работы звонилки с контролами лиц*/
 (function ($) {
     $.fn.initToolTip = function (source, $container) {
-        $.fn.qtip.zindex = 15000;
+        $.fn.qtip.zindex = 99998;
         return this.each(function (index, element) {
             var domElement = this;
             initToolTip(domElement, source, $container);

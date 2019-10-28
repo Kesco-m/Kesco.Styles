@@ -428,6 +428,7 @@ function v4_treeViewInit(ctrlId) {
                         'dt': v4_dt,
                         'return': v4_trees[ctrlId].returnData,
                         'returnType': v4_trees[ctrlId].returnType,
+                        'returnCondition': v4_trees[ctrlId].returnCondition,
                         'loadId': v4_trees[ctrlId].loadId,
                         'orderByField': orderByField,
 						'orderByDirection': orderByDirection,

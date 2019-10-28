@@ -7,9 +7,9 @@ var v4_xmlHTTP = null;
 /*Обязательная для переопределения на станице клиенте ссылка на справку по текущей странице */
 var v4_helpURL = null;
 /*Глобальный параметр, указывающей странице, что необходимо устновить постоянное содинение с сервером*/
-var v4_isComet = true;
-/*Ссылка с параметрами на хендлер Comet*/
-var v4CometUrl_Template = "";
+var v4_isSignal = true;
+/*Ссылка с параметрами на хендлер Signal*/
+var v4SignalUrl_Template = "";
 /*Глобальное свойство отменяющее потерю фокуса элементом управления*/
 var v4_isStopBlur = false;
 /*Глобальное свойство, определяющее элемент управления, на который надо установить фокус, после потери фокуса текущим контролом*/
@@ -34,10 +34,6 @@ var v4_clientName = '';
 
 /*Глобальное свойство, определяющее: запрашивать ли подтверждение у пользователя при закрытии/уходе страницы при несохраненных данных*/
 var isAsk = false;
-/*Глобальное свойство, определяющее: данные на страницы были изменены пользователем*/
-var isChanged = false;
-/*Глобальное свойство, определяющее: данные на странице корректны*/
-var isValidate = false;
 /*Глобальное свойство, определяющее: Необходимость выполнения дополнительных скриптов при загрузке страницы*/
 var isAddFunc = false;
 /*Глобальное свойство, определяющее: Дополнительные параметры*/
@@ -433,29 +429,6 @@ function hc(s, c) {
     return ~(' ' + s + ' ').indexOf(' ' + c + ' ');
 }
 
-/*Функция-аксессор для замены одного класса стиелей на указанный
-o- элемент
-add - новый класс стилей
-del - старый класс стилей
-*/
-function cc(o, add, del) {
-    var o = o || {}, n = 'className', cN = (undefined != o[n]) ? o[n] : o, ok = 0;
-    if ('string' !== typeof cN) return false;
-    var re = new RegExp('(\\s+|^)' + del + '(\\s+|$)', 'g');
-    if (add)
-        if (!hc(cN, add)) {
-            cN += ' ' + add;
-            ok++;
-        }
-    if (del)
-        if (hc(cN, del)) {
-            cN = cN.replace(re, ' ');
-            ok++;
-        }
-    if (!ok) return false;
-    if ('object' == typeof o) o[n] = cN;
-    else return cN;
-}
 
 /*=========================================================================================================================================*/
 /*===========================================================Базовые функции V4============================================================*/
@@ -661,7 +634,10 @@ function v4_setFocus2NextCtrl(id, tab) {
                     v4_setFocus2NextCtrl(nctrl.id);
                 } else {
 			        if($('#'+nctrl.id).is(':visible')){
-                        nctrl.focus();
+                        setTimeout(function()
+                        {
+                            nctrl.focus();
+                        },10);
                     }
 			        else
 			        {
@@ -675,7 +651,10 @@ function v4_setFocus2NextCtrl(id, tab) {
                 var childSelect = nctrl.getElementsByTagName('SELECT');
                 if (childSelect.length > 0) {
                     if (!childSelect[0].disabled) {
-                        childSelect[0].focus();
+                        
+                        setTimeout(function () {
+                            childSelect[0].focus();
+                        }, 10);
                         return;
                     }
                 }
@@ -685,13 +664,15 @@ function v4_setFocus2NextCtrl(id, tab) {
                         if (child[i].disabled) {
                             v4_setFocus2NextCtrl(child[i].id);
                         } else {
-				if($('#'+child[i].id).is(':visible')){
-					child[i].focus();
-				}
-				else
-				{
-					 v4_setFocus2NextCtrl(child[i].id);
-				}
+				            if($('#'+child[i].id).is(':visible')){
+                                setTimeout(function () {
+                                    child[i].focus();
+                                }, 10);
+				            }
+				            else
+				            {
+					             v4_setFocus2NextCtrl(child[i].id);
+				            }
                             return;
                         }
                     }
@@ -739,11 +720,11 @@ function v4_windowOpen(uri, inx, params, target) {
 o - элемент
 */
 function v4_replaceStyleRequired(o) {
-    if (o == null) return;
-    if (o.value == '' && o.getAttribute('isRequired') == 1) {
-        cc(o, 'v4s_required', '');
+    if (o == null || o.id==null || o.id=="") return;
+    if ((o.value == null || o.value.trim() == '') && o.getAttribute('isRequired') == 1) {
+        $("#" + o.id).addClass("v4s_required");
     } else {
-        cc(o, '', 'v4s_required');
+        $("#" + o.id).removeClass("v4s_required");
     }
 }
 
@@ -940,7 +921,7 @@ function v4_keepAlive() {
         cmd();
 }
 
-/*Функция удаления из Application информации об странице с последующим закрытием ее в браузере*/
+/*Функция удаления из KescoHub информации об странице с последующим закрытием ее в браузере*/
 function v4_dropWindow() {
     if (window.idp != null && window.idp != 'undefined') {
         cmd('page', 'close');
@@ -971,7 +952,7 @@ function v4_closeIFrameSrc(ifrControl, ifrIdp) {
 function v4_closeWindowByIdp(widp, isframe) {
     if (!widp) return;
     var frameParams = isframe ? "&frame=true" : "";
-    var url = v4_cometUrl + "/DialogResult.ashx?control=window&command=pageclose&callbackKey=" + widp + frameParams;
+    var url = "DialogResult.ashx?control=window&command=pageclose&callbackKey=" + widp + frameParams;
     $.ajax({
         async: false,
         type: "POST",
@@ -1075,11 +1056,12 @@ function v4_init() {
 
         // При выгрузке страницы - запрашиваем сервер об отключении клиента
         if (window.self !== window.top) {
-        //frame -- может чего вставим!!!!
-        }
-        else
+            //frame -- может чего вставим!!!!
+        } else {
+            if (typeof idp === 'undefined' || idp === null) return;
             v4_closeWindowByIdp(idp, false);
-        
+        }
+
     });
 
     v4s_init();
@@ -1095,19 +1077,10 @@ function v4_init() {
         document.addEventListener("focus", v4_setActiveElement, true);
         document.addEventListener("blur", v4_clearActiveElement, true);
     }
-    if (v4_isComet) {
-        var _itemName = "&name="
-        if (typeof v4_ItemName === 'undefined' || v4_ItemName === null) {
-            _itemName = "";
-        } else {
-            _itemName += v4_ItemName;
-        }
 
-        v4CometUrl_Template = v4_cometUrl + "/comet.ashx?guid=" + idp + "&id=" + v4_ItemId + _itemName + "&editable=" + isEditable;
-         v4_connectComet('connect');
-    } else {
-        window.setInterval("v4_keepAlive();", 60000);
-    }
+
+    //window.setInterval("v4_keepAlive();", 60000);
+    
 
     $("#pageHeader button").button();
     setTimeout(function() {
@@ -1143,13 +1116,13 @@ function v4_docView_Show(id, idCtrl) {
 /*Функция проверки несохраненных изменений на странице*/
 function v4_checkDataBeforeCloseWindow() {
     try {
-        if (isChanged && isValidate) {
+        if (v4_isChanged && v4_isValidate) {
             return 'Данные были изменены. Вы уверены, что хотите закрыть страницу?\nThe data has been changed. Are you sure you want to close the page?';
         }
     } catch (e) { }
 }
 
-/*Функция установки активного элента документа при получении им форкуса
+/*Функция установки активного элемента документа при получении им форкуса
 event - текущее событие
 */
 function v4_setActiveElement(event) {
@@ -1474,27 +1447,30 @@ function v4_toLocalTime(instr, format, lang, isLocal) {
 /*Функция инициализации всплывающего DIV для контрола select*/
 function v4s_init() {
     var borderStyle = "1px solid darkgray";
-    v4s_popup = ce("DIV");
-    v4s_popup.id = "v4s_popup";
-    v4s_popup.style.borderLeft = borderStyle;
-    v4s_popup.style.borderRight = borderStyle;
-    v4s_popup.style.borderBottom = borderStyle;
-    v4s_popup.style.position = "absolute";
-    v4s_popup.style.maxHeight = "250px";
-    v4s_popup.style.overflow = "auto";
-    v4s_popup.style.display = "none";
-    v4s_popup.style.zIndex = "21000";
     v4s_isPopupOpen = false;
     v4f_isPopupOpen = false;
 
-    Event.add(v4s_popup, 'mouseover', v4s_popupOver);
-    Event.add(v4s_popup, 'mouseout', v4s_popupOut);
-    Event.add(v4s_popup, 'mousedown', v4s_mouseDown);
-    Event.add(v4s_popup, 'click', v4s_popupClick);
-    
+    var $div_p = $('<div />').appendTo('body');
+    if (!$div_p) return;
 
-    v4s_popup.ids = '';
-    ac(v4s_popup);
+    $div_p.attr('id', 'v4s_popup');
+    $div_p.attr('ids', '');
+
+    $div_p.css("border-left", borderStyle);
+    $div_p.css("border-right", borderStyle);
+    $div_p.css("border-bottom", borderStyle);
+    $div_p.css("position", "absolute");
+    $div_p.css("max-height", "250px");
+    $div_p.css("overflow", "auto");
+    $div_p.css("display", "none");
+    $div_p.css("z-index", "21000");
+
+    $div_p.bind("mouseover", v4s_popupOver);
+    $div_p.bind("mouseout", v4s_popupOut);
+    $div_p.bind("mousedown", v4s_mouseDown);
+    $div_p.bind("click", v4s_popupClick);
+
+    v4s_popup = document.getElementById("v4s_popup");
 }
 
 function v4s_mouseDown(event) {
@@ -1767,15 +1743,22 @@ var v4s_onBlur = function (event) {
     if (o == null) return;
 
     var id = o.id.substring(0, o.id.length - 2);
-    if (!v4s_isPopupOpen) {
+    var nolimit = o.getAttribute('nolimit') == "true";
+
+    if (!v4s_isPopupOpen && !nolimit) {
         if (o.value != o.getAttribute('t')) {
             cmdasync('ctrl', id, 'tn', o.value);
         }
+
     } else {
         if (document.activeElement == null || document.activeElement.id !== id) {
             if (o.value != o.getAttribute('t')) {
-				o.value = '';
-                cmdasync('ctrl', id, 'tn', o.value);
+                if (nolimit) {
+                    cmdasync('ctrl', id, 'vn', o.value, 'tn', o.value, 'next', 1);
+                } else {
+                    o.value = '';
+                    cmdasync('ctrl', id, 'tn', o.value);
+                }
 			}
             v4_replaceStyleRequired(o);
             v4s_hidePopup();
@@ -1809,6 +1792,7 @@ function v4s_keyUp(event) {
     var o = e.target || e.srcElement;
     var id = o.id.substring(0, o.id.length - 2);
     v4s_btnStyle(id);
+    v4_replaceStyleRequired(o);
 }
 
 /*Функция-обработчик события изменения текста в контроле Select
@@ -1935,8 +1919,7 @@ function v4s_keyDown(event) {
         var inp = gi(id + '_0');
         var btn = gi(id + '_1');
         inp.setAttribute('stxt', '');
-        v4_replaceStyleRequired(o);
-
+        
         if (btn != null) {
             if ((btn.getAttribute('urlShowEntity') != null || btn.getAttribute('funcShowEntity') != null) &&
                 ((o != null && o.getAttribute('v') != "") || (inp != null && inp.getAttribute('v') != ""))) {
@@ -2029,6 +2012,7 @@ function v4t_keyDown(event) {
     event = window.event || event;
     var e = event;
     var o = e.target || e.srcElement;
+
     if (e.keyCode == 13) {
         v4_setFocus2NextCtrl();
         return false;
@@ -2037,9 +2021,55 @@ function v4t_keyDown(event) {
         v4_setFocus2NextCtrl(null, true);
         return false;
     }
+}
+
+/*Функция-обработчик события нажатия кнопки в контролах Textbox и TextArea
+event-текущее событие
+*/
+function v4t_keyUp(event) {
+    event = window.event || event;
+    var e = event;
+    var o = e.target || e.srcElement;
+
+    if (o.getAttribute('ov') != o.value) {
+        v4_SetSaveButtonDisabled(false);
+    }
+    else {
+        var isChange = v4t_CheckChange();
+        v4_SetSaveButtonDisabled(!isChange);
+    }
+
     v4_replaceStyleRequired(o);
 }
 
+/*Функция возвращает true, если были изменения контролов на странице
+*/
+function v4t_CheckChange(id) {
+    var isChange = false;
+    $('body').find('input[type=text], textearea').each(function () {
+        if (id == null || id != ($(this)).attr('id')) {
+            if (!$(this).attr('v')) {
+                if ($(this).val() != $(this).attr('ov')) {
+                    //alert(id + ' ' + ($(this)).attr('id') + ' ' + $(this).val() +'-'+ $(this).attr('ov'));
+                    isChange = true;
+                }
+            } else {
+                if ($(this).attr('v') != $(this).attr('ov')) {
+                    isChange = true;
+                }
+            }
+        }
+
+    });
+    return isChange;
+}
+
+function v4_SetSaveButtonDisabled(status) {
+    if (status == true)
+        $('#btnApply').prop('disabled', true).addClass('ui-state-disabled').removeClass('ui-state-default');
+    else
+        $('#btnApply').prop('disabled', false).removeClass('ui-state-disabled').addClass('ui-state-default');
+}
 
 /*=========================================================================================================================================*/
 /*===========================================================Функции контрола V4.ComboBox==================================================*/
@@ -2136,13 +2166,14 @@ function v4_ctrlChanged(id, goToNextControl, isDatePicker, isMonthFormat) {
         v4_replaceStyleRequired(o);
         if (o.value != o.getAttribute('t')) {
             cmd('ctrl', id, 'v', o.value, 'ov', o.getAttribute('ov'));
-            if (goToNextControl) {
+            if (goToNextControl && $('#' + o.id).is(':focus')) {
                 v4_setFocus2NextCtrl(id + '_0');
             }
         } else if (goToNextControl) {
             v4_setFocus2NextCtrl(id + '_0');
         }
     }
+
 }
 
 /*Функция-обработчик события нажатия клавиш на контроле DatePicker
@@ -2369,6 +2400,42 @@ $(document).ready(function () {
     if (!window.v4_save) {
         window.v4_save = function () { };
     }
+
+    $(document).find('input, textarea, select').each(function () {
+        if ($(this).attr('nv') == '1') {
+            var ov = $(this).attr('ov');
+            var t = $(this).attr('t');
+            $(this).removeClass('v4_modified');
+            if ($(this).attr('ov') !== undefined) {
+                if ($(this).attr('type') == 'checkbox') {
+                    if ($(this).attr('ov') == 1 && $(this).prop('checked') == false ||
+                        $(this).attr('ov') != 1 && $(this).prop('checked') == true) {
+                        $(this).addClass('v4_modified');
+                    }
+                } else {
+                    if ($(this).attr('v') !== undefined) {
+                        if ($(this).attr('ov') != $(this).attr('v'))
+                            $(this).addClass('v4_modified');
+                    } else {
+                        if ($(this).hasClass("v4n")) {
+                            var ov_f = parseFloat(ov);
+                            var t_f = parseFloat(t);
+                            if (!(isNaN(ov_f) && t_f == 0 || isNaN(t_f) && ov_f == 0)) {
+                                if (ov_f != t_f) {
+                                    $(this).addClass('v4_modified');
+                                }
+                            }
+                        } else {
+                            if ($(this).attr('ov') != $(this).attr('t')) {
+                                $(this).addClass('v4_modified');
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    });
+
 });
 
 /*Обработчик закрытия popup-окна*/
@@ -2758,25 +2825,28 @@ var v4_showConfirm = v4_polymorph(
 
 //Функция вывода диалогового сообщения
 var v4_showMessage_isOpen = false;
-function v4_showMessage(message, title, status, ctrlFocus, width, height, scriptOk) {
+function v4_showMessage(message, title, status, ctrlFocus, width, height, scriptOk, noButtons) {
 
     if (v4_showMessage_isOpen) return;
     v4_showMessage_isOpen = true;
 
     var dialogId = v4_guid();
-    var okId = v4_guid() + "_ok";
-    var buttons = [
-        {
-            id: okId,
-            text: "OK",
-            width: 75,
-            click: function () {
-                $('#' + dialogId).dialog("close");
-                if (scriptOk != null && scriptOk != "")
-                    eval(scriptOk);
+    var buttons = null;
+    if (noButtons == null) {
+        var okId = v4_guid() + "_ok";
+        buttons = [
+            {
+                id: okId,
+                text: "OK",
+                width: 75,
+                click: function() {
+                    $('#' + dialogId).dialog("close");
+                    if (scriptOk != null && scriptOk != "")
+                        eval(scriptOk);
+                }
             }
-        }
-    ];
+        ];
+    }
 
     var onOpen = function () {
         setTimeout(function() {
@@ -2795,7 +2865,7 @@ function v4_createDialogElements() {
     var v4_DialogOL = gi('v4_divDialogOverlay');
     
     if (v4_DialogOL == null) {
-        $('body').prepend("<div id='v4_divDialogOverlay' style='z-index: 20000'></div>");
+        $('body').prepend("<div id='v4_divDialogOverlay' style='z-index: 99998'></div>");
         $('#v4_divDialogOverlay').append("<div id='v4_divDialogBox'></div>");
         $('#v4_divDialogBox').append("<div id='v4_divDialogContainer'></div>");
         $('#v4_divDialogContainer').append("<div id='v4_divDialogBoxHead'></div>");

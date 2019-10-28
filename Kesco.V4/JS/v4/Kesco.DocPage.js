@@ -288,6 +288,7 @@ function v4_tryOpenDocumentInDocView(docId, signChanged, isfirstSign, tryDocview
         if (signChanged && !isfirstSign) return;
         /*здесь выполнять только синхронно, т.к. сохранение докмумента
        идет асинхронно и повторная асинхронная команда не выполниться*/
+        
         cmd("cmd", "RefreshDoc");
         return;
     }
@@ -330,9 +331,11 @@ function v4_tryOpenDocumentInDocView(docId, signChanged, isfirstSign, tryDocview
 
     if (needClose && !existError)
         v4_closeWindow();
-    else
+    else {
+        if (signChanged && !isfirstSign) return;
         /*здесь выполнять только синхронно, т.к. сохранение докмумента
          идет асинхронно и повторная асинхронная команда не выполниться*/
         cmd("cmd", "RefreshDoc");
+    }
 }
 
