@@ -1,0 +1,483 @@
+﻿/*Общие стили html-элементов*/
+* {font-family: Verdana, Tahoma, Arial, Helvetica, Sans-Serif; font-size: 8.25pt;}
+#kesco_silverHost {
+    clear: both;
+    line-height: 0;
+    height: 0;
+}
+
+::-ms-clear {
+    display: none;
+}
+
+html, body {height: 100%; overflow: hidden;}
+iframe {background-color: transparent; border: none;}
+
+body{background:#efefef; margin: 0px;}
+body:not(:-moz-handler-blocked) fieldset {display: table-cell;}
+
+input:disabled, textarea:disabled {background-color: #efefef !important; color: gray !important;}
+/*Стили элементов при установке фокуса*/
+input:focus { outline:1px solid #3399FF !important;}
+button:focus { outline: 1px solid #3399FF !important; }
+img:focus { outline: 1px solid #3399FF !important; }
+a:focus { outline: 1px solid #3399FF !important;}
+a.ounlinenone { outline: none !important;}
+span:focus {outline: 1px solid #3399FF !important;}
+
+/*Стили для ссылки*/
+a {text-decoration:none; color: black; cursor:pointer}
+a:hover {text-decoration: underline; color: #3399FF; cursor:pointer}
+a:active{color:#3399FF; text-decoration: none; cursor:pointer}
+
+/*Стили для картинки и таблицы*/
+img {vertical-align: middle;}
+
+/*Стили для текстареа и легенды*/
+fieldset { min-width:100px; border: 1px solid #999999; padding-left: 0px; padding-right: 0px; padding-top:2px; padding-bottom:0px;}
+textarea{width: 100%; overflow: auto; white-space: pre-wrap; word-wrap: break-word; border: 1px solid #999999;padding-top: -2px; padding-left: 1px; margin-left: -1px; margin-bottom: 0px; }
+
+/*Стили для кнопки, радиобатона, чекбокса и текстового поля ввода*/
+input[type=text]{width: 100%; height: 15px; border: 1px solid #999999; padding-top: -2px; padding-left: 1px; margin-left: -1px; margin-bottom: 0px; background-color: white;}
+input[type=checkbox]{margin: 0px;}
+input[type=radio]{margin: 0px; margin-top: -1px; vertical-align: middle;}
+
+/*Выделение текста жирным*/
+.v4Bold,.v4pageTitle {
+    font-weight: bold !important;
+}
+
+
+/*стили контейнеров формы*/
+
+#v4form {
+    height: 100%;
+}
+
+.v4pageHeader {
+    position: relative;
+    top: 0;
+    left: 0;
+    overflow: hidden;
+    z-index: 9999;
+    vertical-align: middle;
+    background: Gainsboro;
+    border-left: 1px solid #aaaaaa;
+    border-right: 1px solid #aaaaaa;
+    border-bottom: 1px solid #aaaaaa;
+    padding: 1px 1px 0 0;
+}
+
+.v4formFilter {
+    overflow: auto;
+    max-height: 400px
+}
+
+.v4pageDocHeader {clear: right;margin-left: 8px; margin-top: 8px;}
+
+.v4pageFooter {
+    width: 100%;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    overflow: hidden;
+    z-index: 9999;
+    vertical-align: middle;
+    padding-top: 2px;
+    padding-bottom: 2px;
+    background-color: #efefef !important;
+    border-top: 1px solid #aaaaaa;
+}
+
+.v4pageTitle {
+    clear: both;
+    display: block;
+    padding-top: 5px;
+    padding-bottom: 10px;
+    padding-left: 5px;
+}
+
+.v4formContainer {      
+    overflow: auto;
+    min-height: 150px;
+}
+
+
+.v4_modified{ outline: 1px solid goldenrod; }
+
+/*Стили для элементов управления выбора условий фильтрации*/
+.v4_selectClause{font-size: 7pt !important; cursor: pointer;}
+.v4_selectClauseDisabled{font-size: 7pt !important; color:gray;}
+.v4_selectItemDisabled{color:gray;}
+.v4_p_clause{width:100%; font-size: 7pt !important; background-color: white; cursor: pointer !important;}
+
+		  
+/*Стили для V4.Select*/
+.v4s_btn {
+    width: 20px;
+    height: 19px;
+    padding: 0px;
+    margin: 0px;
+    margin-right: -1px;
+    background: buttonface no-repeat center center;
+    border: 1px solid #999999;
+    border-left: none;
+    cursor: pointer !important;
+}
+.v4s_btnDetail {
+    width: 20px;
+    height: 19px;
+    padding: 0px;
+    margin: 0px;
+    background: url(/styles/detail.gif) buttonface no-repeat center center;
+    border: 1px solid #999999;
+    border-left: none;
+    cursor: pointer !important;
+}	
+
+.v4s_required{background-color: #FFFF99 !important;}
+
+.v4s_p{width: 100%; padding:0px; background-color: white; cursor: pointer !important;}
+.v4s_p_highlight { background:#3399FF; color:white;  cursor: pointer !important;}
+.v4s_p_fullResult{max-height: 200px; overflow-y: auto;}
+.v4s_pc{color: gray; cursor: default !important;}
+.v4s_pc_over{color: gray; cursor: pointer !important;}
+.v4s_noselect{ } 
+.v4s td{padding:0px;}
+
+/*Стили для V4.DatePicker*/
+.v4d input[type=text]{width:80px;}
+/*Стили для V4.Number*/
+.v4n input[type=text]{text-align: right;}
+/*Стили для V4.CheckBox*/
+.v4ch {padding-top:4px;}
+/*Стили для V4.Signal*/
+.v4signal { padding-left:5px; width:250px; position: fixed; z-index: 100;}
+/*Стили для V4.Chat*/
+.v4chat { width:400px; position: fixed; background:#efefef;text-align: left;font-weight: normal;z-index: 100; }
+/*Стили для наименования контрола*/
+.v4caption { display: inline-block; vertical-align: bottom; margin-bottom: 5px;margin-right: 5px; }
+
+/*Стили для таблиц*/
+table th{ text-align: center !important; white-space: nowrap; font-weight:normal;}
+table.grid	{border-collapse:collapse; border-top: 1px solid darkgray; border-left: 1px solid darkgray ;}
+
+.grid td	{border-bottom: 1px solid darkgray; border-right: 1px solid darkgray ; }
+.grid tr:nth-of-type(odd) {background-color: #efefef !important;}
+.grid tr:nth-of-type(even) {background-color: white !important;}
+
+table.gridSimple {border-collapse: collapse;border-top: 1px solid darkgray;border-left: 1px solid darkgray;}
+.gridSimple td {border-bottom: 1px solid darkgray;border-right: 1px solid darkgray;}
+
+
+table.gridGroup	{border-collapse:collapse; border-top: 1px solid darkgray; border-left: 1px solid darkgray ;}
+.gridGroup td {border-bottom: 1px solid darkgray; border-right: 1px solid darkgray ; }
+.gridGroup .grouping  {background-color: #efefef !important; color: black}
+.gridGroup tr {background-color: white;}
+
+table.gridSelect {border-collapse:collapse; border-spacing:0px 0px}
+.gridSelect td	{border-bottom: 1px solid darkgray ;padding: 0px;padding-left: 3px; padding-right: 3px; }
+.gridHeaderSelect td {background: #629ed0; border: 1px solid #aaaaaa; color: white !important; text-align: center;}
+
+.gridHeader th {background: #629ed0; border: 1px solid #aaaaaa; color: white !important; text-align: center; height: 25px;}
+.gridHeader td {background: #629ed0; border: 1px solid #aaaaaa; color: white !important; text-align: center; height: 25px;}
+.gridWrapper{overflow: auto;position: relative;}
+.gridFilterValue {color: #3399FF;}
+
+/*Стили для блока информации */
+table.iblock{border: darkgray 1px solid; border-collapse: collapse;}
+table.iblock th {padding: 3px;font-weight: normal;background-color: lightgrey;}
+table.iblock td {padding: 3px;font-weight: normal;background-color: white;}
+table.detail {border-collapse: collapse;}
+table.detail td{padding-right: 0px;padding-left: 4px;padding-top: 0px;padding-bottom: 0px;}
+
+/*Стили для элемента управления Alert */
+#v4_divDialogOverlay{ display:none; position:absolute; top:0px; left:0px; width:100%; }
+#v4_divDialogBox{ display:none; position:fixed; z-index:10; background-color:white; box-shadow: 0px 0px 10px white; }
+#v4_divDialogBox > div { overflow: auto; }
+#v4_divDialogBox > div > #v4_divDialogBoxHead{ font-weight: bold; }
+#v4_divDialogBox > div > #v4_divDialogBoxBody{  }
+#v4_divDialogBox > div > #v4_divDialogBoxFoot{ text-align:center; }
+
+#v4_divDialogBoxFoot{ padding:5px; text-align:center; margin-left:5px; margin-right:5px; margin-bottom:5px;}
+#v4_divDialogBoxBody{ padding:10px; margin-left:5px; margin-right:5px; margin-bottom:2px; margin-top:2px;}
+#v4_divDialogBoxHead{ padding:5px; margin-top:5px; margin-left:5px; margin-right:5px; cursor: pointer !important;}		  
+
+#content {margin: 0 100px 0 100px;}
+#content p {margin: 0.5em 0 0 0;}
+#info {margin: 1em 0 1em 0; padding: 1em; border: solid 1px darkgray ;}
+
+
+/*Стили для ссылок в тултипе*/
+.v4_itemCompanyControl {cursor: pointer !important;}
+  
+/*Стили для элемента управления Menu*/
+ul.menu {list-style:none; margin:0; padding:0}
+ul.menu * {margin:0; padding:0}
+ul.menu a {display:block; color:#000; text-decoration: none;  white-space: nowrap; cursor: pointer; outline: none !important;}
+ul.menu li {position:relative; }
+ul.menu ul {position:absolute; top:27px;  left:0; display:none; opacity:0; list-style:none}
+ul.menu ul li {position:relative;   margin:0}
+ul.menu ul li a {display:block; padding:2px 7px 2px; background-color:Gainsboro}
+ul.menu ul li a:hover {background-color:#c5c5c5}
+ul.menu ul ul {left: 168px; top:0px}
+ul.menu .menulink { padding:5px 5px 5px; white-space: nowrap; }
+ul.menu .menulink:hover, ul.menu .menuhover { background: #c5c5c5;}
+ul.menu .sub { background: Gainsboro;}
+ul.menu .topline {}
+ul.menu .childmenu {}
+ul.menu .parentmenu {float: left; height:26px; }
+ul.menu .menulinkfixheight{height:16px;}
+
+
+.v4divHeader {
+    position: relative;
+    width: 99.5%;
+	border: 1px solid #aaaaaa; background: #cccccc;
+    padding: 0px;
+    top: 0px;
+    left: 0px;
+}
+
+/*Стили для кнопок*/
+.v4divButtonHeader {	
+	border: 1px solid #aaaaaa; background: #cccccc;
+	padding: 0px;  
+	top: 0px; 
+	left: 0px; 
+}
+
+.v4div-outer-container {display: table;height: 90%;position: absolute;width: 90%;}
+.v4div-inner-container {display: table-cell;text-align: center;vertical-align: middle;}
+.v4div-centered-content {background: white; border: 1px solid darkgray ; display: inline-block; position: relative; padding: 3px;text-align: left;z-index: 22000;max-width: 500px;} 
+
+/*стили сообщений в соответствии со стилями нотификаций*/
+.v4Error{color: red;}
+.v4Information{color: gray;}
+.v4Recommended {color: #ff99ff;}
+
+.v4ContextHelp {cursor: help;}
+/*.v4ContextHelp:after {
+    content: "";
+    display: inline-block;
+    background: url("/styles/help.gif") no-repeat;
+    width: 16px;
+    height: 16px;  	
+    margin: 2px 0 -4px 2px;	
+}
+*/
+
+/*стили табличной разметки*/
+.v4DivTable { display:table; }
+.v4DivTableRow { display:table-row; }
+.v4DivTableCell { display:table-cell; text-align: center; vertical-align: middle;}
+.v4DivTableCellT {display: table-cell;text-align: left; vertical-align: top; width: 1px;}
+
+/*разметка*/
+.v4DivBlock {  display: block ;}
+.v4DivInline {  display: inline-block; text-align: center; vertical-align: middle;}
+.v4PaddingCell {padding-right: 5px; white-space: nowrap;}
+.v4PaddingTop {padding-top: 5px;}
+.v4NumberTextAlign{ text-align: right !important;}
+.v4GridFilterText{ color: gray; padding-left: 15px;}
+.v4NoWrap {white-space: nowrap;}
+
+.v4sortable-table {margin: 10px auto; border: 1px solid #ddd; border-collapse: collapse; }
+.v4sortable-table td {padding: 10px;border: 1px solid #ddd; background: #fff;}
+.v4sortable-table .v4PaddingCell {cursor: move;}
+.v4sortable-table th {padding: 10px; border: 1px solid #ddd; background: #efefef; }
+
+.v4HrPopup {
+    border: none; /* Убираем границу для браузера Firefox */
+    color: lightgray; /* Цвет линии для остальных браузеров */
+    background-color: lightgray; /* Цвет линии для браузера Firefox и Opera */
+    height: 1px; /* Толщина линии */
+   }
+
+/*переопределение стилей jqueru ui*/  
+
+.v4-dialog-noclose .ui-dialog-titlebar-close {display: none }
+.v4-dialog-confirm .ui-dialog-buttonpane {text-align: center; }
+.v4-dialog-confirm .ui-dialog-buttonpane .ui-dialog-buttonset {float: none;}  
+.v4_calendar-off .ui-datepicker-calendar {display: none;}
+.ui-widget-overlay{opacity:0 !important; filter: Alpha(Opacity=0) !important;}
+.ui-dialog-shadow { 		
+	-moz-box-shadow: 5px 5px 5px rgba(68,68,68,0.6);
+	-webkit-box-shadow: 5px 5px 5px rgba(68,68,68,0.6);
+	box-shadow: 5px 5px 5px rgba(68,68,68,0.6);
+}
+
+.ui-datepicker {
+    z-index: 99999 !important;
+}
+.ui-datepicker-weekend a {color: red !important;}
+.ui-datepicker-current {font-weight: bold !important; color: black !important;}
+.ui-widget-header{background: #cccccc; border: 1px solid #aaaaaa}
+.ui-widget-content{background:#efefef !important;}
+.ui-widget input, .ui-widget select, .ui-widget textarea, .ui-widget button{font-family: Verdana, Tahoma, Arial, Helvetica, Sans-Serif !important; font-size: 8.25pt !important;}
+.ui-dialog { z-index: 20000; overflow: visible; padding-top:0px !important;margin-top:0px !important;}
+
+.ui-dialog .ui-dialog-content {
+    overflow: inherit;
+}
+
+
+.ui-selectmenu-button {vertical-align: middle;margin-right: 1px;}   
+span.ui-selectmenu-text{line-height: normal !important;}    
+
+/*Стиль грида*/
+.v4Grid {min-height: 50px;}
+.v4GridListGroup{ list-style-type: none;padding: 0px;margin: 0px;}
+.v4GridListGroup>li{display: inline-block; list-style: outside none none;float: left;width: auto;height:22px; border:1px solid #999999; padding-top:4px; background-color: #cccccc; margin-right:2px; font-weight:bold; vertical-align:middle;}
+
+/*Стиль дерева*/
+.v4Treeview{border-right: 1px ridge #aaaaaa; min-width:300px; min-height: 100px; overflow:auto;}
+
+/*Стиль контейнера, включающего дерево*/
+.v4TreeViewContainer {min-width: 300px; float: left;}
+.v4TreeviewFiltered{font-family: verdana;color: #3399FF;}
+
+.qtip-color {
+    background-color: #FFFFFF;
+    border-color: #444444;
+    color: #444444;
+    border-radius: 8px;
+}
+
+mark {
+  background: yellow;
+   background-color: #yellow;
+  -webkit-text-fill-color: yellow;
+  -webkit-appearance: none;
+  -webkit-tap-highlight-color: yellow;
+}
+
+mark.current {
+  background: orange;
+   background-color: #orange;
+  -webkit-text-fill-color: orange;
+  -webkit-appearance: none;
+  -webkit-tap-highlight-color: orange;
+}
+
+.icon-backtolist {
+    background: url(/styles/backtolist.gif) no-repeat;
+}
+
+.icon-call {
+    background: url(/styles/call.gif) no-repeat;
+}
+
+.icon-delete {
+    background: url(/styles/Delete.gif) no-repeat;
+}
+
+.icon-new {
+    background: url(/styles/New.gif) no-repeat;
+}
+
+.icon-block {
+    background: url(/styles/Error.gif) no-repeat;
+}
+
+.ui-icon-delete {
+    background: url(/styles/Delete.gif) no-repeat !important;
+}
+
+.ui-icon-trash {
+    background: url(/styles/Delete.gif) no-repeat !important;
+}
+
+
+.ui-icon-document {
+    background: url(/styles/New.gif) no-repeat !important;
+}
+
+.ui-icon-plus {
+    background: url(/styles/New.gif) no-repeat !important;
+}
+
+.ui-icon-wrench {
+    background: url(/styles/Tools.gif) no-repeat !important;
+}
+
+
+.ui-icon-closethick {
+    background: url(/styles/CloseWindow.gif) no-repeat !important;
+}
+
+.ui-icon-check {
+    background: url(/styles/ok.gif) no-repeat !important;
+}
+
+.ui-icon-pencil {
+    background: url(/styles/Edit.gif) no-repeat !important;
+}
+
+.ui-icon-disk {
+    background: url(/styles/Save.gif) no-repeat !important;
+}
+
+.ui-icon-refresh {
+    background: url(/styles/Refresh.gif) no-repeat !important;
+}
+
+.ui-icon-arrowrefresh-1-e {
+    background: url(/styles/Refresh.gif) no-repeat !important;
+}
+
+.ui-icon-help {
+    background: url(/styles/help.gif) no-repeat !important;
+}
+.ui-icon-triangle-1-s{
+	 background: url(/styles/ScrollDownEnabled.gif) center no-repeat !important;	
+}
+
+.ui-icon-minus{
+	background: url(/styles/minimize.gif) center no-repeat !important;	
+}
+
+.ui-icon-extlink{
+	background: url(/styles/extlink.gif) center no-repeat !important;	
+}
+.ui-icon-indoc{
+	background: url(/styles/indoc.gif) center no-repeat !important;	
+}
+.ui-icon-newwin{
+	background: url(/styles/newwindow.gif) center no-repeat !important;	
+}
+	
+.ui-icon-volume-off{
+	background: url(/styles/filterapply.gif) center no-repeat !important;	
+}
+
+.ui-icon-search{
+	background: url(/styles/search.gif) center no-repeat !important;	
+}
+
+.ui-icon-arrowthick-1-e{
+	background: url(/styles/arrowright.gif) center no-repeat !important;	
+}
+
+.ui-icon-print{
+	background: url(/styles/print.gif) center no-repeat !important;	
+}
+
+.ui-icon-person{
+	background: url(/styles/user.gif) center no-repeat !important;	
+}
+
+.ui-icon-folder-open{
+	background: url(/styles/FolderOpen.gif) center no-repeat !important;	
+}
+
+.ui-icon-copy{
+	background: url(/styles/copy.gif) center no-repeat !important;	
+}
+
+.ui-icon-alert{
+	background: url(/styles/warning.gif) center no-repeat !important;	
+}
+.ui-icon-export1s{
+	background: url(/styles/1s.gif) center no-repeat !important;	
+}

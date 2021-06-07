@@ -246,7 +246,7 @@ function docProcGetRoot()
 {
 	var i;
 	var s;
-	var checkName = RegExp("script.js","gi");
+	var checkName = RegExp("/script\\.js(([^/]*)|(\\?.*))$","gi");
 	for(i=0;i<document.scripts.length;i++)
 	{
 		s=document.scripts[i].src;
@@ -261,7 +261,7 @@ function docProcAddStyle(filename)
 	if (document.getElementsByTagName("HEAD").length==0) return;
 	var link;
 	link = document.createElement("LINK");
-	link.href=root+filename;
+	link.href=root+"/"+filename;
 	link.type="text/css";
 	link.rel="stylesheet";
 	document.getElementsByTagName("HEAD")[0].appendChild(link);
@@ -487,7 +487,7 @@ function kescoParams_get(key,mode)
 	
 	
 	
-	if (!(new RegExp('search|return|clid|docview|title','ig')).test(key) && p.getAttribute('la')!='1' )
+	if (!(new RegExp('search|return|clid|docview|title|id|selectedid|catid|add|type','ig')).test(key) && p.getAttribute('la')!='1' )
 	{
 		var clid = kescoParams_getP('clid').getAttribute('qs');
 		var sRez=wsdirect(paramWsdl,"GetParameter",	new Array("clid",clid,"uid",0,"key",key));
@@ -1372,8 +1372,9 @@ function kescoControl_tuneState(obj)
 	obj.inp.disabled =	(obj.state==STATE_DISABLED)||
 						(obj.state==STATE_NORMAL&&obj.cbIsUsed&&!obj.cb.checked);
 	
-	obj.inp.style.display = (obj.state&(STATE_NORMAL|STATE_DISABLED))
-								?DISPLAY_INLINE:DISPLAY_NONE;
+	Newdisplay = (obj.state&(STATE_NORMAL|STATE_DISABLED))?DISPLAY_INLINE:DISPLAY_NONE;
+
+	if (obj.inp.style.display != Newdisplay) obj.inp.style.display = Newdisplay;
 	
 	obj.inp.style.backgroundColor = (obj.userMustChooseValue&&obj.value=="")||
 									 (obj.inp.value!=obj.valueText)
@@ -2254,13 +2255,12 @@ function kescoSelect_opendocResult(rez,obj)
 }
 function kescoSelect_showInfoWindowEnd(obj)
 {
-	window.open(kescoParams_appendUrl(obj.urlForm,'id',obj.value),'_blank');
+    try {
+        Kesco.windowOpen(kescoParams_appendUrl(obj.urlForm, 'id', obj.value), '_blank');
+    } catch (e) {
+        window.open(kescoParams_appendUrl(obj.urlForm, 'id', obj.value), '_blank');
+    }	
 }
-
-
-
-
-
 
 function kescoSelect_lock()
 {
@@ -3623,6 +3623,7 @@ function kescoDate_parseDate(str)
 			case 5:
 					arr[i]='0'+arr[i];
 			case 6:
+			case 8:
 					
 					A[j]=parseFloat(arr[i].substr(0,2)); 
 					if (A[j]!=0) j++;
@@ -4688,25 +4689,19 @@ function DialogPageOpen(url,params)
 
 	if (document.getElementById("divWait")!=null)	document.getElementById("divWait").style.visibility="visible";
 
-
-	window.showModalDialog(url,null,params);
-	
-	
+    
+    try {
+        Kesco.windowShowModalDialog(url, null, params);
+    } catch (e) {
+        window.showModalDialog(url, null, params);
+    }
+     	
 	_dlgRez=getCookie("DlgRez");
 	_parentAction=getCookie("ParentAction");
 	_retVal=getCookie("RetVal");
-
-	
+    	
 	SetDlgRez(0);
 		
-	
-	
-	
-
-	
-	
-	
-	
 	if (_dlgRez>0)
 	switch(GetParentAction())
 	{
@@ -5356,7 +5351,7 @@ function srv4js(func, args, callback, obj) {
         catch (e) { }
 		
         Silverlight.createObject(
-            "/styles/Silver4JS.xap?v=1.0.0.0", 	// source
+            "/styles/Silver4JS.xap?v=1.0.1.0", 	// source
             kesco_silverHost, 			// parent element
             "silver4js_obj", 			// id for generated object element
             {width: "1px", height: "1px" },
